@@ -42,13 +42,16 @@ static const char* const g_Exceptions[] = {
     ""
 };
 
-void i686_ISR_InitializeGates();
+// defined in isr.asm
+extern void *isr_table[];
 
 void i686_ISR_Initialize()
 {
-    i686_ISR_InitializeGates();
-    for (int i = 0; i < 256; i++)
+    // initialize IDT Handlers
+    for (int i = 0; i < 256; i++) {
+        i686_IDT_SetGate(i, isr_table[i], i686_GDT_CODE_SEGMENT, IDT_FLAG_RING0 | IDT_FLAG_GATE_32BIT_INT);
         i686_IDT_EnableGate(i);
+    }
 
     i686_IDT_DisableGate(0x80);
 }
