@@ -23,8 +23,6 @@ i686_ISR%1:
 
 %endmacro
 
-%include "arch/i686/isrs_gen.inc"
-
 isr_common:
     pusha               ; pushes in order: eax, ecx, edx, ebx, esp, ebp, esi, edi
 
@@ -114,6 +112,6 @@ global isr_table:
 isr_table:
 %assign i 0
 %rep 256
-	dw i686_ISR%+i
+	dd i686_ISR%+i
 %assign i i+1
 %endrep
