@@ -1,5 +1,5 @@
 
-TOOLCHAIN_PREFIX = $(abspath toolchain/$(TARGET))
+TOOLCHAIN_PREFIX = $(abspath ~/toolchain/$(TARGET))
 export PATH := $(TOOLCHAIN_PREFIX)/bin:$(PATH)
 
 toolchain: toolchain_binutils toolchain_gcc

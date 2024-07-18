@@ -30,11 +30,10 @@ i686_DisableInterrupts:
     cli
     ret
 
-global crash_me
-crash_me:
-    ; div by 0
-    ; mov ecx, 0x1337
-    ; mov eax, 0
-    ; div eax
-    int 0x80
+global i686_GetInterrupts
+i686_GetInterrupts:
+    [bits 32]
+    pushfd
+    pop eax
+    and eax, 0x200
     ret

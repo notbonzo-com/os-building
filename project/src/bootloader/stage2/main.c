@@ -1,15 +1,18 @@
 #include <stdint.h>
-#include "stdio.h"
-#include "x86.h"
-#include "disk.h"
-#include "fat.h"
-#include "memdefs.h"
-#include "memory.h"
+#include <stdio.h>
+#include <x86.h>
+#include <disk.h>
+#include <fat.h>
+#include <memdefs.h>
+#include <memory.h>
+#include <memdetect.h>
+
+#include <boot/bootparams.h>
 
 uint8_t* KernelLoadBuffer = (uint8_t*)MEMORY_LOAD_KERNEL;
 uint8_t* Kernel = (uint8_t*)MEMORY_KERNEL_ADDR;
 
-typedef void (*KernelStart)();
+typedef void (*KernelStart)(bootparams_t params);
 
 void __attribute__((cdecl)) start(uint16_t bootDrive)
 {
@@ -28,7 +31,6 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
         goto end;
     }
 
-    // load kernel
     FAT_File* fd = FAT_Open(&disk, "/kernel.bin");
     uint32_t read;
     uint8_t* kernelBuffer = Kernel;
@@ -37,11 +39,13 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
         memcpy(kernelBuffer, KernelLoadBuffer, read);
         kernelBuffer += read;
     }
-    FAT_Close(fd);
-
-    // execute kernel
+    FAT_Close(fd);    
+    bootparams_t params;
+    params.bootDrive = bootDrive;
+    Memory_Detect(&params.memInfo);
     KernelStart kernelStart = (KernelStart)Kernel;
-    kernelStart();
+
+    kernelStart(params);
 
 end:
     for (;;);

@@ -100,17 +100,8 @@ void i686_PIC_Disable()
 
 void i686_PIC_Mask(int irq)
 {
-    uint8_t port;
-
-    if (irq < 8) 
-    {
-        port = PIC1_DATA_PORT;
-    }
-    else
-    {
+    if (irq > 8) 
         irq -= 8;
-        port = PIC2_DATA_PORT;
-    }
 
     uint8_t mask = i686_inb(PIC1_DATA_PORT);
     i686_outb(PIC1_DATA_PORT,  mask | (1 << irq));
@@ -118,17 +109,8 @@ void i686_PIC_Mask(int irq)
 
 void i686_PIC_Unmask(int irq)
 {
-    uint8_t port;
-
-    if (irq < 8) 
-    {
-        port = PIC1_DATA_PORT;
-    }
-    else
-    {
+    if (irq > 8)
         irq -= 8;
-        port = PIC2_DATA_PORT;
-    }
 
     uint8_t mask = i686_inb(PIC1_DATA_PORT);
     i686_outb(PIC1_DATA_PORT,  mask & ~(1 << irq));

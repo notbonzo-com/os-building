@@ -1,5 +1,5 @@
 TARGET_ASMFLAGS += -f elf
-TARGET_CFLAGS += -ffreestanding -nostdlib -I.
+TARGET_CFLAGS += -ffreestanding -nostdlib -I. -Werror -Wall -Wextra -I../lib
 TARGET_LIBS += -lgcc
 TARGET_LINKFLAGS += -T linker.ld -nostdlib
 
@@ -25,6 +25,7 @@ SOURCES_ASM = $(wildcard *.asm) \
 			  $(wildcard */*/*.asm) \
 			  $(wildcard */*/*/*.asm)
 
+OLIB_C=$(patsubst ../../lib/%.c, $(BUILD_DIR)/lib/%.obj, $(LIB_C))
 
 OBJECTS_ASM = $(patsubst %.asm, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM))
 
@@ -34,7 +35,7 @@ all: kernel
 
 kernel: $(BUILD_DIR)/kernel.bin
 
-$(BUILD_DIR)/kernel.bin: $(OBJECTS_ASM) $(OBJECTS_C)
+$(BUILD_DIR)/kernel.bin: $(OBJECTS_ASM) $(OBJECTS_C) $(OLIB_C)
 	@$(TARGET_LD) $(TARGET_LINKFLAGS) -Wl,-Map=$(BUILD_DIR)/kernel.map -o $@ $^ $(TARGET_LIBS)
 	@echo "--> Created:  kernel.bin"
 

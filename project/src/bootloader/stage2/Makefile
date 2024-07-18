@@ -1,5 +1,5 @@
 TARGET_ASMFLAGS += -f elf
-TARGET_CFLAGS += -ffreestanding -nostdlib
+TARGET_CFLAGS += -ffreestanding -nostdlib -I../../lib -I.
 TARGET_LIBS += -lgcc
 TARGET_LINKFLAGS += -T linker.ld -nostdlib
 
@@ -8,13 +8,16 @@ SOURCES_ASM=$(wildcard *.asm)
 OBJECTS_C=$(patsubst %.c, $(BUILD_DIR)/stage2/c/%.obj, $(SOURCES_C))
 OBJECTS_ASM=$(patsubst %.asm, $(BUILD_DIR)/stage2/asm/%.obj, $(SOURCES_ASM))
 
+LIB_C=$(wildcard ../../lib/*.c)
+OLIB_C=$(patsubst ../../lib/%.c, $(BUILD_DIR)/lib/%.obj, $(LIB_C))
+
 .PHONY: all stage2 clean always
 
 all: stage2
 
 stage2: $(BUILD_DIR)/stage2.bin
 
-$(BUILD_DIR)/stage2.bin: $(OBJECTS_ASM) $(OBJECTS_C)
+$(BUILD_DIR)/stage2.bin: $(OBJECTS_ASM) $(OBJECTS_C) $(OLIB_C)
 	@$(TARGET_LD) $(TARGET_LINKFLAGS) -Wl,-Map=$(BUILD_DIR)/stage2.map -o $@ $^ $(TARGET_LIBS)
 	@echo "--> Created  stage2.bin"
 
@@ -26,6 +29,12 @@ $(BUILD_DIR)/stage2/c/%.obj: %.c
 $(BUILD_DIR)/stage2/asm/%.obj: %.asm
 	@mkdir -p $(@D)
 	@$(TARGET_ASM) $(TARGET_ASMFLAGS) -o $@ $<
+	@echo "--> Compiled: " $<
+
+$(BUILD_DIR)/lib/%.obj: ../../lib/%.c
+	@mkdir -p $(@D)
+	@echo "--> LIB Compiling: " $<
+	@$(TARGET_CC) $(TARGET_CFLAGS) -c -o $@ $<
 	@echo "--> Compiled: " $<
 
 clean:

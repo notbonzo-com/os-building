@@ -1,0 +1,17 @@
+{
+	"files.associations": {
+		"*.embeddedhtml": "html",
+		"memory.h": "c",
+		"stdint.h": "c",
+		"io.h": "c",
+		"irq.h": "c",
+		"pthread.h": "c",
+		"x86.h": "c",
+		"idt.h": "c",
+		"gdt.h": "c",
+		"bootparams.h": "c",
+		"stdio.h": "c",
+		"pic.h": "c",
+		"hal.h": "c"
+	}
+}

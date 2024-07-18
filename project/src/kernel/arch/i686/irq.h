@@ -1,5 +1,5 @@
 #pragma once
-#include "isr.h"
+#include "idt.h"
 
 typedef void (*IRQHandler)(Registers* regs);
 

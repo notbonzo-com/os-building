@@ -1,14 +1,12 @@
 include build_scripts/config.mk
 
-.PHONY: all floppy_image kernel bootloader clean always tools_fat
+.PHONY: all floppy_image kernel bootloader clean always run debug reset
 
-all: floppy_image tools_fat
+all: floppy_image run
 
 include build_scripts/toolchain.mk
 
-#
-# Floppy image
-#
+ROOTFS_DIR=root
 floppy_image: $(BUILD_DIR)/main_floppy.img
 
 $(BUILD_DIR)/main_floppy.img: bootloader kernel
@@ -17,14 +15,10 @@ $(BUILD_DIR)/main_floppy.img: bootloader kernel
 	@dd if=$(BUILD_DIR)/stage1.bin of=$@ conv=notrunc >/dev/null
 	@mcopy -i $@ $(BUILD_DIR)/stage2.bin "::stage2.bin"
 	@mcopy -i $@ $(BUILD_DIR)/kernel.bin "::kernel.bin"
-	@mcopy -i $@ test.txt "::test.txt"
-	@mmd -i $@ "::mydir"
-	@mcopy -i $@ test.txt "::mydir/test.txt"
+	@mcopy -i $@ -s $(ROOTFS_DIR)/* "::"
 	@echo "--> Created: " $@
 
-#
-# Bootloader
-#
+
 bootloader: stage1 stage2
 
 stage1: $(BUILD_DIR)/stage1.bin
@@ -46,14 +40,6 @@ $(BUILD_DIR)/kernel.bin: always
 	@$(MAKE) -C src/kernel BUILD_DIR=$(abspath $(BUILD_DIR))
 
 #
-# Tools
-#
-tools_fat: $(BUILD_DIR)/tools/fat
-$(BUILD_DIR)/tools/fat: always tools/fat/fat.c
-	@mkdir -p $(BUILD_DIR)/tools
-	@$(MAKE) -C tools/fat BUILD_DIR=$(abspath $(BUILD_DIR))
-
-#
 # Always
 #
 always:
@@ -67,3 +53,16 @@ clean:
 	@$(MAKE) -C src/bootloader/stage2 BUILD_DIR=$(abspath $(BUILD_DIR)) clean
 	@$(MAKE) -C src/kernel BUILD_DIR=$(abspath $(BUILD_DIR)) clean
 	@rm -rf $(BUILD_DIR)/*
+	@clear
+
+run:
+	@clear
+	@qemu-system-x86_64 -drive format=raw,file=build/main_floppy.img,if=floppy -no-reboot -no-shutdown -M smm=off -debugcon stdio
+
+debug:
+	@clear
+	@bochs -f bochs_config
+
+reset:
+	@make clean
+	@make

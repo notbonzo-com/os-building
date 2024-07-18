@@ -1,94 +1,99 @@
 #include "gdt.h"
 #include <stdint.h>
+#include <memory.h>
 
-typedef struct
+GDTDescriptor g_GDTDescriptor;
+
+typedef struct  {
+    GDTEntry entries[5];
+    GDTEntry tss;
+} __attribute__((packed)) GDTType;
+
+GDTType g_GDT;
+
+TSS g_TSS = {0};
+
+static void i686_GDT_Load()
 {
-    uint16_t LimitLow;                  // limit (bits 0-15)
-    uint16_t BaseLow;                   // base (bits 0-15)
-    uint8_t BaseMiddle;                 // base (bits 16-23)
-    uint8_t Access;                     // access
-    uint8_t FlagsLimitHi;               // limit (bits 16-19) | flags
-    uint8_t BaseHigh;                   // base (bits 24-31)
-} __attribute__((packed)) GDTEntry;
+    __asm__ volatile (
+        "lgdtl (%0)\n"            // Load GDT descriptor
+        "mov $0x10, %%ax\n"       // Load data segment selector
+        "mov %%ax, %%ds\n"
+        "mov %%ax, %%es\n"
+        "mov %%ax, %%fs\n"
+        "mov %%ax, %%gs\n"
+        "mov %%ax, %%ss\n"
+        "ljmp $0x08, $.1\n"       // Far jump to reload the code segment
+        ".1:\n"                   // Label to jump to
+        : : "r" (&g_GDTDescriptor)
+        : "ax"                    // AX is used aka "clobbered"
+    );
 
-typedef struct
-{
-    uint16_t Limit;                     // sizeof(gdt) - 1
-    GDTEntry* Ptr;                      // address of GDT
-} __attribute__((packed)) GDTDescriptor;
-
-typedef enum
-{
-    GDT_ACCESS_CODE_READABLE                = 0x02,
-    GDT_ACCESS_DATA_WRITEABLE               = 0x02,
-
-    GDT_ACCESS_CODE_CONFORMING              = 0x04,
-    GDT_ACCESS_DATA_DIRECTION_NORMAL        = 0x00,
-    GDT_ACCESS_DATA_DIRECTION_DOWN          = 0x04,
-
-    GDT_ACCESS_DATA_SEGMENT                 = 0x10,
-    GDT_ACCESS_CODE_SEGMENT                 = 0x18,
-
-    GDT_ACCESS_DESCRIPTOR_TSS               = 0x00,
-
-    GDT_ACCESS_RING0                        = 0x00,
-    GDT_ACCESS_RING1                        = 0x20,
-    GDT_ACCESS_RING2                        = 0x40,
-    GDT_ACCESS_RING3                        = 0x60,
-
-    GDT_ACCESS_PRESENT                      = 0x80,
-
-} GDT_ACCESS;
-
-typedef enum 
-{
-    GDT_FLAG_64BIT                          = 0x20,
-    GDT_FLAG_32BIT                          = 0x40,
-    GDT_FLAG_16BIT                          = 0x00,
-
-    GDT_FLAG_GRANULARITY_1B                 = 0x00,
-    GDT_FLAG_GRANULARITY_4K                 = 0x80,
-} GDT_FLAGS;
-
-// Helper macros
-#define GDT_LIMIT_LOW(limit)                (limit & 0xFFFF)
-#define GDT_BASE_LOW(base)                  (base & 0xFFFF)
-#define GDT_BASE_MIDDLE(base)               ((base >> 16) & 0xFF)
-#define GDT_FLAGS_LIMIT_HI(limit, flags)    (((limit >> 16) & 0xF) | (flags & 0xF0))
-#define GDT_BASE_HIGH(base)                 ((base >> 24) & 0xFF)
-
-#define GDT_ENTRY(base, limit, access, flags) {                     \
-    GDT_LIMIT_LOW(limit),                                           \
-    GDT_BASE_LOW(base),                                             \
-    GDT_BASE_MIDDLE(base),                                          \
-    access,                                                         \
-    GDT_FLAGS_LIMIT_HI(limit, flags),                               \
-    GDT_BASE_HIGH(base)                                             \
+    __asm__ volatile ("ltr %0" : : "rm" ((uint16_t)0x28) : "memory");
 }
 
-GDTEntry g_GDT[] = {
-    // NULL descriptor
-    GDT_ENTRY(0, 0, 0, 0),
-
-    // Kernel 32-bit code segment
-    GDT_ENTRY(0,
-              0xFFFFF,
-              GDT_ACCESS_PRESENT | GDT_ACCESS_RING0 | GDT_ACCESS_CODE_SEGMENT | GDT_ACCESS_CODE_READABLE,
-              GDT_FLAG_32BIT | GDT_FLAG_GRANULARITY_4K),
-
-    // Kernel 32-bit data segment
-    GDT_ENTRY(0,
-              0xFFFFF,
-              GDT_ACCESS_PRESENT | GDT_ACCESS_RING0 | GDT_ACCESS_DATA_SEGMENT | GDT_ACCESS_DATA_WRITEABLE,
-              GDT_FLAG_32BIT | GDT_FLAG_GRANULARITY_4K),
-
-};
-
-GDTDescriptor g_GDTDescriptor = { sizeof(g_GDT) - 1, g_GDT};
-
-void __attribute__((cdecl)) i686_GDT_Load(GDTDescriptor* descriptor, uint16_t codeSegment, uint16_t dataSegment);
+void i686_Flush_TSS()
+{
+    __asm__ volatile ("mov $0x28, %ax\n" "ltr %ax\n");
+}
 
 void i686_GDT_Initialize()
 {
-    i686_GDT_Load(&g_GDTDescriptor, i686_GDT_CODE_SEGMENT, i686_GDT_DATA_SEGMENT);
+    g_GDT.entries[0] = (GDTEntry) { 0, 0, 0, 0, 0, 0 };
+
+    /* Kernel Code */
+    g_GDT.entries[1] = (GDTEntry) {
+        0xFFFF, 0, 0,
+        GDT_ACCESS_PRESENT | GDT_ACCESS_RING0 | GDT_ACCESS_CODE_SEGMENT | GDT_ACCESS_CODE_READABLE,
+        (GDT_FLAG_32BIT | GDT_FLAG_GRANULARITY_4K),
+        0
+    };
+
+    /* Kernel Data */
+    g_GDT.entries[2] = (GDTEntry) {
+        0xFFFF, 0, 0,
+        GDT_ACCESS_PRESENT | GDT_ACCESS_RING0 | GDT_ACCESS_DATA_SEGMENT | GDT_ACCESS_DATA_WRITEABLE,
+        (GDT_FLAG_32BIT | GDT_FLAG_GRANULARITY_4K),
+        0
+    };
+
+    /* User Code */
+    g_GDT.entries[3] = (GDTEntry) {
+        0xFFFF, 0, 0,
+        GDT_ACCESS_PRESENT | GDT_ACCESS_RING3 | GDT_ACCESS_CODE_SEGMENT | GDT_ACCESS_CODE_READABLE,
+        (GDT_FLAG_32BIT | GDT_FLAG_GRANULARITY_4K),
+        0
+    };
+
+    /* User Data */
+    g_GDT.entries[4] = (GDTEntry) {
+        0xFFFF, 0, 0,
+        GDT_ACCESS_PRESENT | GDT_ACCESS_RING3 | GDT_ACCESS_DATA_SEGMENT | GDT_ACCESS_DATA_WRITEABLE,
+        (GDT_FLAG_32BIT | GDT_FLAG_GRANULARITY_4K),
+        0
+    };
+
+    /* TSS */
+    uint32_t tss_base = (uint32_t)&g_TSS;
+    uint32_t tss_limit = sizeof(TSS);
+
+    g_GDT.tss.LimitLow = tss_limit & 0xFFFF;
+    g_GDT.tss.BaseLow = (unsigned int)(&tss_base) & 0xFFFF;
+    g_GDT.tss.BaseMiddle = ((unsigned int)(&g_TSS) & 0x00FF0000) >> 16;
+    g_GDT.tss.Access = 0xE9;
+    g_GDT.tss.FlagsLimitHi = ((tss_limit & 0xF0000) >> 16) | (0x00);
+    g_GDT.tss.BaseHigh = ((unsigned int)(&g_TSS) & 0xFF000000) >> 24;
+
+
+    memset(&g_TSS, 0, sizeof(g_TSS));
+
+    g_TSS.ss0 = i686_GDT_DATA_SEGMENT;
+    uint32_t stackAddr;
+    __asm__ volatile ("mov %%esp, %0" : "=r" (stackAddr));
+    g_TSS.esp0 = stackAddr;
+
+    g_GDTDescriptor.Limit = sizeof(g_GDT) - 1;
+    g_GDTDescriptor.Ptr = (GDTEntry*)&g_GDT;
+    
+    i686_GDT_Load();
 }
