@@ -1,5 +1,5 @@
-# os-building
-mostly taken from nanobyte's building an OS series, intended to be built upon
+# OS Building
 
+Lets save this dude's university
 
-Currently a clone of the part 10 video's progress
+- root/ everything from there will be copied into the floppy disk
