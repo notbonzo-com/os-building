@@ -4,6 +4,7 @@ section .entry
 
 extern __bss_start
 extern __end
+extern _init
 
 extern start
 global entry
@@ -11,37 +12,31 @@ global entry
 entry:
     cli
 
-    ; save boot drive
     mov [g_BootDrive], dl
+    mov [g_BootPartitionOff], si
+    mov [g_BootPartitionSeg], di
 
-    ; setup stack
     mov ax, ds
     mov ss, ax
     mov sp, 0xFFF0
     mov bp, sp
 
-    ; switch to protected mode
-    call EnableA20          ; 2 - Enable A20 gate
-    call LoadGDT            ; 3 - Load GDT
+    call EnableA20
+    call LoadGDT
 
-    ; 4 - set protection enable flag in CR0
     mov eax, cr0
     or al, 1
     mov cr0, eax
 
-    ; 5 - far jump into protected mode
     jmp dword 08h:.pmode
 
 .pmode:
-    ; we are now in protected mode!
     [bits 32]
     
-    ; 6 - setup segment registers
     mov ax, 0x10
     mov ds, ax
     mov ss, ax
    
-    ; clear bss (uninitialized data)
     mov edi, __bss_start
     mov ecx, __end
     sub ecx, edi
@@ -49,7 +44,13 @@ entry:
     cld
     rep stosb
 
-    ; expect boot drive in dl, send it as argument to cstart function
+    call _init
+
+    mov dx, [g_BootPartitionSeg]
+    shl edx, 16
+    mov dx, [g_BootPartitionOff]
+    push edx
+
     xor edx, edx
     mov dl, [g_BootDrive]
     push edx
@@ -61,12 +62,10 @@ entry:
 
 EnableA20:
     [bits 16]
-    ; disable keyboard
     call A20WaitInput
     mov al, KbdControllerDisableKeyboard
     out KbdControllerCommandPort, al
 
-    ; read control output port
     call A20WaitInput
     mov al, KbdControllerReadCtrlOutputPort
     out KbdControllerCommandPort, al
@@ -75,7 +74,6 @@ EnableA20:
     in al, KbdControllerDataPort
     push eax
 
-    ; write control output port
     call A20WaitInput
     mov al, KbdControllerWriteCtrlOutputPort
     out KbdControllerCommandPort, al
@@ -85,7 +83,6 @@ EnableA20:
     or al, 2                                    ; bit 2 = A20 bit
     out KbdControllerDataPort, al
 
-    ; enable keyboard
     call A20WaitInput
     mov al, KbdControllerEnableKeyboard
     out KbdControllerCommandPort, al
@@ -96,8 +93,6 @@ EnableA20:
 
 A20WaitInput:
     [bits 16]
-    ; wait until status bit 2 (input buffer) is 0
-    ; by reading from command port, we read status byte
     in al, KbdControllerCommandPort
     test al, 2
     jnz A20WaitInput
@@ -105,7 +100,6 @@ A20WaitInput:
 
 A20WaitOutput:
     [bits 16]
-    ; wait until status bit 1 (output buffer) is 1 so it can be read
     in al, KbdControllerCommandPort
     test al, 1
     jz A20WaitOutput
@@ -131,7 +125,6 @@ ScreenBuffer                        equ 0xB8000
 g_GDT:      ; NULL descriptor
             dq 0
 
-            ; 32-bit code segment
             dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF for full 32-bit range
             dw 0                        ; base (bits 0-15) = 0x0
             db 0                        ; base (bits 16-23)
@@ -139,7 +132,6 @@ g_GDT:      ; NULL descriptor
             db 11001111b                ; granularity (4k pages, 32-bit pmode) + limit (bits 16-19)
             db 0                        ; base high
 
-            ; 32-bit data segment
             dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF for full 32-bit range
             dw 0                        ; base (bits 0-15) = 0x0
             db 0                        ; base (bits 16-23)
@@ -147,7 +139,6 @@ g_GDT:      ; NULL descriptor
             db 11001111b                ; granularity (4k pages, 32-bit pmode) + limit (bits 16-19)
             db 0                        ; base high
 
-            ; 16-bit code segment
             dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF
             dw 0                        ; base (bits 0-15) = 0x0
             db 0                        ; base (bits 16-23)
@@ -155,7 +146,6 @@ g_GDT:      ; NULL descriptor
             db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
             db 0                        ; base high
 
-            ; 16-bit data segment
             dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF
             dw 0                        ; base (bits 0-15) = 0x0
             db 0                        ; base (bits 16-23)
@@ -167,3 +157,5 @@ g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
             dd g_GDT                    ; address of GDT
 
 g_BootDrive: db 0
+g_BootPartitionSeg: dw 0
+g_BootPartitionOff: dw 0

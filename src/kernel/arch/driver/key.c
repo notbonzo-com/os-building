@@ -85,16 +85,18 @@ char getchar_locking()
     return c;
 }
 
-char* gets(char* str)
+char* gets()
 {
+    static char str[MAX_INPUT_STRING_SIZE];
     char c;
     int i = 0;
 
-    do {
+    while (i < MAX_INPUT_STRING_SIZE - 1) {
         c = getchar_locking();
+        if (c == '\n') break;
         str[i++] = c;
-    } while (c != '\n');
-
+    }
+    
     str[i] = '\0';
 
     return str;

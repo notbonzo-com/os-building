@@ -7,6 +7,14 @@ typedef struct {
 	uint32_t type, ACPI;
 } __attribute__((packed)) memregion_t;
 
+enum memregion_type {
+    USABLE = 1,
+    RESERVED = 2,
+    ACPI = 3,
+    NVS = 4,
+    BAD = 5
+};
+
 typedef struct {
 	uint32_t region_count;
 	memregion_t* regions;

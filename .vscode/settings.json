@@ -1,0 +1,14 @@
+{
+	"files.associations": {
+		"*.embeddedhtml": "html",
+		"minmax.h": "c",
+		"io.h": "c",
+		"debug.h": "c",
+		"key.h": "c",
+		"bootparams.h": "c",
+		"stdio.h": "c",
+		"vfs.h": "c",
+		"stdint.h": "c",
+		"ata.h": "c"
+	}
+}

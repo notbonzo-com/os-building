@@ -1,6 +1,6 @@
 #pragma once
 
-// 0x00000000 - 0x000003FF - interrupt vector table
+// 0x00000000 - 0x000003FF - interrupt vector table ; we dont care tho it can die
 // 0x00000400 - 0x000004FF - BIOS data area
 
 #define MEMORY_MIN          0x00000500
@@ -10,8 +10,11 @@
 #define MEMORY_FAT_ADDR     ((void*)0x20000)
 #define MEMORY_FAT_SIZE     0x00010000
 
-#define MEMORY_LOAD_KERNEL  ((void*)0x30000)
-#define MEMORY_LOAD_SIZE    0x00010000
+#define MEMORY_ELF_ADDR     ((void*)0x30000)
+#define MEMORY_ELF_SIZE     0x00010000
+
+#define MEMORY_LOAD_KERNEL  ((void*)0x40000)
+#define MEMORY_LOAD_SIZE    0x0010000 //TODO Double size (kernel is chunky)
 
 // 0x00020000 - 0x00030000 - stage2
 

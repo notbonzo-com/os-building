@@ -101,18 +101,26 @@ void vfprintf(fd_t file, const char* fmt, va_list args)
                 if (*fmt == 'h')
                 {
                     length = PRINTF_LENGTH_SHORT_SHORT;
-                    state = PRINTF_STATE_SPEC;
                 }
-                else goto PRINTF_STATE_SPEC_;
+                else
+                {
+                    length = PRINTF_LENGTH_SHORT;
+                    goto PRINTF_STATE_SPEC_;
+                }
+                state = PRINTF_STATE_SPEC;
                 break;
 
             case PRINTF_STATE_LENGTH_LONG:
                 if (*fmt == 'l')
                 {
                     length = PRINTF_LENGTH_LONG_LONG;
-                    state = PRINTF_STATE_SPEC;
                 }
-                else goto PRINTF_STATE_SPEC_;
+                else
+                {
+                    length = PRINTF_LENGTH_LONG;
+                    goto PRINTF_STATE_SPEC_;
+                }
+                state = PRINTF_STATE_SPEC;
                 break;
 
             case PRINTF_STATE_SPEC:
@@ -175,10 +183,10 @@ void vfprintf(fd_t file, const char* fmt, va_list args)
                         case PRINTF_LENGTH_DEFAULT:     fprintf_unsigned(file, va_arg(args, unsigned int), radix);
                                                         break;
                                                         
-                        case PRINTF_LENGTH_LONG:        fprintf_unsigned(file, va_arg(args, unsigned  long), radix);
+                        case PRINTF_LENGTH_LONG:        fprintf_unsigned(file, va_arg(args, unsigned long), radix);
                                                         break;
 
-                        case PRINTF_LENGTH_LONG_LONG:   fprintf_unsigned(file, va_arg(args, unsigned  long long), radix);
+                        case PRINTF_LENGTH_LONG_LONG:   fprintf_unsigned(file, va_arg(args, unsigned long long), radix);
                                                         break;
                         }
                     }

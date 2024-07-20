@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "Freestanding",
+            "includePath": [
+                "${workspaceFolder}/src/bootloader/stage2",
+                "${workspaceFolder}/src/kernel",
+                "${workspaceFolder}/src/libs"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c23",
+            "cppStandard": "c++23",
+            "intelliSenseMode": "gcc-x64",
+            "compilerArgs": [
+                "-ffreestanding",
+                "-nostdlib",
+                "-lgcc"
+            ]
+        }
+    ],
+    "version": 4
+}

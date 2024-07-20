@@ -5,6 +5,8 @@
 #include <fat.h>
 #include <memdefs.h>
 #include <memory.h>
+#include <mbr.h>
+#include <elf.h>
 #include <memdetect.h>
 
 #include <boot/bootparams.h>
@@ -14,7 +16,7 @@ uint8_t* Kernel = (uint8_t*)MEMORY_KERNEL_ADDR;
 
 typedef void (*KernelStart)(bootparams_t params);
 
-void __attribute__((cdecl)) start(uint16_t bootDrive)
+void __attribute__((cdecl)) start(uint16_t bootDrive, void* partition)
 {
     clrscr();
 
@@ -24,28 +26,32 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
         printf("Disk init error\r\n");
         goto end;
     }
+    printf("Disk initialized\r\n");
 
-    if (!FAT_Initialize(&disk))
+    Partition part;
+    MBR_DetectPartition(&part, &disk, partition);
+
+    if (!FAT_Initialize(&part))
     {
         printf("FAT init error\r\n");
         goto end;
     }
+    printf("FAT initialized\r\n");
 
-    FAT_File* fd = FAT_Open(&disk, "/kernel.bin");
-    uint32_t read;
-    uint8_t* kernelBuffer = Kernel;
-    while ((read = FAT_Read(&disk, fd, MEMORY_LOAD_SIZE, KernelLoadBuffer)))
+    KernelStart kernelEntry;
+    if (!ELF_Read(&part, "/boot/kernel.elf", (void**)&kernelEntry))
     {
-        memcpy(kernelBuffer, KernelLoadBuffer, read);
-        kernelBuffer += read;
+        printf("ELF read failed, booting halted!");
+        goto end;
     }
-    FAT_Close(fd);    
+    printf("ELF loaded\r\n");
+
     bootparams_t params;
     params.bootDrive = bootDrive;
     Memory_Detect(&params.memInfo);
-    KernelStart kernelStart = (KernelStart)Kernel;
-
-    kernelStart(params);
+    printf("Memory detected\r\n");
+    
+    kernelEntry(params);
 
 end:
     for (;;);
