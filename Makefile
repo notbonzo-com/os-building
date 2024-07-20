@@ -11,6 +11,7 @@ run:
 reset:
 	@make clean
 	@scons
+	@scons run
 
 debug:
 	@scons debug

@@ -9,6 +9,16 @@
 		"stdio.h": "c",
 		"vfs.h": "c",
 		"stdint.h": "c",
-		"ata.h": "c"
+		"ata.h": "c",
+		"mbr.h": "c",
+		"stdbool.h": "c",
+		"fat32.h": "c",
+		"binary.h": "c",
+		"memory.h": "c",
+		"stddef.h": "c",
+		"string.h": "c",
+		"pmm.h": "c",
+		"idt.h": "c",
+		"irq.h": "c"
 	}
 }

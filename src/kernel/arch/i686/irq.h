@@ -1,5 +1,6 @@
 #pragma once
 #include "idt.h"
+#include "pic.h"
 
 typedef void (*IRQHandler)(Registers* regs);
 

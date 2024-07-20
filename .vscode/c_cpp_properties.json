@@ -11,11 +11,12 @@
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c23",
             "cppStandard": "c++23",
-            "intelliSenseMode": "gcc-x64",
+            "intelliSenseMode": "gcc-x86",
             "compilerArgs": [
                 "-ffreestanding",
                 "-nostdlib",
-                "-lgcc"
+                "-lgcc",
+                "-std=c23"
             ]
         }
     ],

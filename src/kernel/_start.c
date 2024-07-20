@@ -12,6 +12,8 @@
 #include <arch/driver/ata.h>
 #include <arch/driver/pmm.h>
 
+#include <arch/sched.h>
+
 extern uint8_t __bss_start;
 extern uint8_t __bss_end;
 
@@ -21,17 +23,20 @@ void _start(bootparams_t params)
     HAL_Initialize(params);
     i686_DisableInterrupts();
     VGA_clrscr();
+    log_debug("kernel", "Bootdrive: %d\n", params.bootDrive);
 
-    log_debug("Kernel", "Bootdrive: %d\n", params.bootDrive);
-    
+
+    scheduler_init();
     i686_EnableInterrupts();
-    for (;;)
-    {
-        char c = getchar();
-        if (c == -1)
-            continue;
-        printf("%c", c);
-    }
+
+    for(;;);
+    // for (;;)
+    // {
+    //     char c = getchar();
+    //     if (c == -1)
+    //         continue;
+    //     printf("%c", c);
+    // }
 
     i686_Panic();
 }

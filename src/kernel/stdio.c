@@ -101,13 +101,14 @@ void vfprintf(fd_t file, const char* fmt, va_list args)
                 if (*fmt == 'h')
                 {
                     length = PRINTF_LENGTH_SHORT_SHORT;
+                    state = PRINTF_STATE_SPEC;
                 }
                 else
                 {
                     length = PRINTF_LENGTH_SHORT;
+                    state = PRINTF_STATE_SPEC;
                     goto PRINTF_STATE_SPEC_;
                 }
-                state = PRINTF_STATE_SPEC;
                 break;
 
             case PRINTF_STATE_LENGTH_LONG:
@@ -179,15 +180,24 @@ void vfprintf(fd_t file, const char* fmt, va_list args)
                         switch (length)
                         {
                         case PRINTF_LENGTH_SHORT_SHORT:
-                        case PRINTF_LENGTH_SHORT:
-                        case PRINTF_LENGTH_DEFAULT:     fprintf_unsigned(file, va_arg(args, unsigned int), radix);
-                                                        break;
-                                                        
-                        case PRINTF_LENGTH_LONG:        fprintf_unsigned(file, va_arg(args, unsigned long), radix);
-                                                        break;
+                            fprintf_unsigned(file, (unsigned char)va_arg(args, unsigned int), radix);
+                            break;
 
-                        case PRINTF_LENGTH_LONG_LONG:   fprintf_unsigned(file, va_arg(args, unsigned long long), radix);
-                                                        break;
+                        case PRINTF_LENGTH_SHORT:
+                            fprintf_unsigned(file, (unsigned short)va_arg(args, unsigned int), radix);
+                            break;
+
+                        case PRINTF_LENGTH_DEFAULT:     
+                            fprintf_unsigned(file, va_arg(args, unsigned int), radix);
+                            break;
+
+                        case PRINTF_LENGTH_LONG:        
+                            fprintf_unsigned(file, va_arg(args, unsigned long), radix);
+                            break;
+
+                        case PRINTF_LENGTH_LONG_LONG:   
+                            fprintf_unsigned(file, va_arg(args, unsigned long long), radix);
+                            break;
                         }
                     }
                 }
