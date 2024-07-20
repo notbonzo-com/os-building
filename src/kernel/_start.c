@@ -17,6 +17,13 @@
 extern uint8_t __bss_start;
 extern uint8_t __bss_end;
 
+void task()
+{
+    for (;;) {
+        debugf(".");        
+    }
+}
+
 void _start(bootparams_t params)
 {
     memset(&__bss_start, 0, (&__bss_end) - (&__bss_start));
@@ -29,14 +36,15 @@ void _start(bootparams_t params)
     scheduler_init();
     i686_EnableInterrupts();
 
-    for(;;);
-    // for (;;)
-    // {
-    //     char c = getchar();
-    //     if (c == -1)
-    //         continue;
-    //     printf("%c", c);
-    // }
+    create_task(task, 0);
+
+    for (;;)
+    {
+        char c = getchar();
+        if (c == -1)
+            continue;
+        printf("%c", c);
+    }
 
     i686_Panic();
 }

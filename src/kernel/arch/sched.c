@@ -71,11 +71,11 @@ void initialize_stack(uint32_t *stack_pointer, void (*task_function)(void)) {
 
 void scheduler_init() {
     memset(&scheduler, 0, sizeof(scheduler));
-    // i686_IRQ_RegisterHandler(0, timer_interrupt_handler); //TODO Fix the interrupt based scheduler
+    i686_IRQ_RegisterHandler(0, timer_interrupt_handler); //TODO Fix the interrupt based scheduler
 
     create_task(kernel_reaper, 0);
 
-    create_task((void (*)(void))__builtin_return_address(0), 1);
+    create_task((void (*)(void))__builtin_return_address(0), 100);
     scheduler.current_task = 1;
 
     yield();
@@ -162,37 +162,26 @@ void schedule(Registers* regs) {
             }
         }
     }
-
+    debugf("Next task: %d\n", next_task);
     if (!found_ready_task) {
         next_task = 0;
     }
-
     scheduler.tasks[next_task].current_priority = scheduler.tasks[next_task].priority;
 
     if (scheduler.current_task != next_task) {
         uint32_t *current_stack_pointer = scheduler.tasks[scheduler.current_task].stack_pointer;
-        current_stack_pointer--;
-        *current_stack_pointer = regs->eip;
-        current_stack_pointer--;
-        *current_stack_pointer = regs->eax;
-        current_stack_pointer--;
-        *current_stack_pointer = regs->ecx;
-        current_stack_pointer--;
-        *current_stack_pointer = regs->edx;
-        current_stack_pointer--;
-        *current_stack_pointer = regs->ebx;
-        current_stack_pointer--;
-        *current_stack_pointer = regs->esp; // Old ESP (garbage)
-        current_stack_pointer--;
-        *current_stack_pointer = regs->ebp;
-        current_stack_pointer--;
-        *current_stack_pointer = regs->esi;
-        current_stack_pointer--;
-        *current_stack_pointer = regs->edi;
-        current_stack_pointer--;
-        *current_stack_pointer = regs->eflags;
-        current_stack_pointer--;
-        *current_stack_pointer = regs->esp;
+        current_stack_pointer -= 11;
+        current_stack_pointer[10] = regs->eip;
+        current_stack_pointer[9]  = regs->eax;
+        current_stack_pointer[8]  = regs->ecx;
+        current_stack_pointer[7]  = regs->edx;
+        current_stack_pointer[6]  = regs->ebx;
+        current_stack_pointer[5]  = regs->esp; // Old ESP (garbage)
+        current_stack_pointer[4]  = regs->ebp;
+        current_stack_pointer[3]  = regs->esi;
+        current_stack_pointer[2]  = regs->edi;
+        current_stack_pointer[1]  = regs->eflags;
+        current_stack_pointer[0]  = regs->esp;
 
         scheduler.tasks[scheduler.current_task].stack_pointer = current_stack_pointer - 11;
         scheduler.current_task = next_task;
