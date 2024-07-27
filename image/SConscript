@@ -5,8 +5,8 @@ from decimal import Decimal
 from io import SEEK_CUR, SEEK_SET
 from pathlib import Path
 from shutil import copy2
-import parted
 import sh
+import platform
 
 from SCons.Action import Action
 from SCons.Builder import Builder
@@ -133,23 +133,31 @@ def build_floppy(image, stage1, stage2, kernel, files, env):
 
 
 def create_partition_table(target: str, align_start: int):
-    device = parted.getDevice(target)
-    disk = parted.freshDisk(device, 'msdos')
-    freeSpace = disk.getFreeSpaceRegions()
-    partitionGeometry = parted.Geometry(device, align_start, end=freeSpace[-1].end)
-    partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=partitionGeometry)
-    partition.setFlag(parted.PARTITION_BOOT)
-    disk.addPartition(partition, constraint=device.optimalAlignedConstraint)
-    disk.commit()
-
+    if platform.system() == 'Darwin':
+        sh.sudo.sh.Command('fdisk')(target, n='OS-B')
+    else:
+        import parted
+        device = parted.getDevice(target)
+        disk = parted.freshDisk(device, 'msdos')
+        freeSpace = disk.getFreeSpaceRegions()
+        partitionGeometry = parted.Geometry(device, align_start, end=freeSpace[-1].end)
+        partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=partitionGeometry)
+        partition.setFlag(parted.PARTITION_BOOT)
+        disk.addPartition(partition, constraint=device.optimalAlignedConstraint)
+        disk.commit()
 
 def mount_fs(image: str, mount_dir: str):
-    sh.guestmount(mount_dir, add=image, mount='/dev/sda1')
+    if platform.system() == 'Darwin':
+        sh.sudo.mount('-o', 'loop', image, mount_dir)
+    else:
+        sh.guestmount(mount_dir, add=image, mount='/dev/sda1')
 
 def unmount_fs(mount_dir: str):
     time.sleep(3)
-    sh.fusermount(u=mount_dir)
-
+    if platform.system() == 'Darwin':
+        sh.sudo.umount(mount_dir)
+    else:
+        sh.fusermount(u=mount_dir)
 
 def build_disk(image, stage1, stage2, kernel, files, env):
     size_sectors = (env['imageSize'] + SECTOR_SIZE - 1) // SECTOR_SIZE

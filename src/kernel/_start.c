@@ -12,17 +12,8 @@
 #include <arch/driver/ata.h>
 #include <arch/driver/pmm.h>
 
-#include <arch/sched.h>
-
 extern uint8_t __bss_start;
 extern uint8_t __bss_end;
-
-void task()
-{
-    for (;;) {
-        debugf(".");        
-    }
-}
 
 void _start(bootparams_t params)
 {
@@ -31,12 +22,7 @@ void _start(bootparams_t params)
     i686_DisableInterrupts();
     VGA_clrscr();
     log_debug("kernel", "Bootdrive: %d\n", params.bootDrive);
-
-
-    scheduler_init();
     i686_EnableInterrupts();
-
-    create_task(task, 0);
 
     for (;;)
     {
