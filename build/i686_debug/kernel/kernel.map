@@ -23,520 +23,525 @@ Linker script and memory map
  *(.entry)
                 0x00100000                        __entry_end = .
 
-.text           0x00100000     0x326e
+.text           0x00100000     0x351e
                 0x00100000                        __text_start = .
  *(.text)
  .text          0x00100000      0x135 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
- .text          0x00100135       0x98 build/i686_debug/kernel/_start.o
+ .text          0x00100135      0x130 build/i686_debug/kernel/_start.o
                 0x00100143                _start
- .text          0x001001cd       0x71 build/i686_debug/kernel/debug.o
-                0x001001cd                logf
- .text          0x0010023e       0xc3 build/i686_debug/kernel/memory.o
-                0x0010023e                memcpy
-                0x0010027f                memset
-                0x001002b2                memcmp
- .text          0x00100301      0x68e build/i686_debug/kernel/stdio.o
-                0x00100301                fputc
-                0x00100324                fputs
-                0x00100356                fprintf_unsigned
-                0x001003fd                fprintf_signed
-                0x0010045d                vfprintf
-                0x001007d4                fprintf
-                0x001007f8                fprint_buffer
-                0x0010089d                putc
-                0x001008be                puts
-                0x001008d7                printf
-                0x001008fa                print_buffer
-                0x00100916                debugc
-                0x00100937                debugs
-                0x00100950                debugf
-                0x00100973                debug_buffer
- .text          0x0010098f      0x10b build/i686_debug/kernel/string.o
-                0x0010098f                strchr
-                0x001009cd                strcpy
-                0x00100a1f                strlen
-                0x00100a45                islower
-                0x00100a6e                toupper
- .text          0x00100a9a       0x4d build/i686_debug/kernel/hal/hal.o
-                0x00100a9a                HAL_Initialize
- .text          0x00100ae7       0xa5 build/i686_debug/kernel/hal/vfs.o
-                0x00100ae7                VFS_Write
- .text          0x00100b8c       0x43 build/i686_debug/kernel/arch/i686/e9.o
-                0x00100bab                e9_putc
- .text          0x00100bcf      0x1ba build/i686_debug/kernel/arch/i686/gdt.o
-                0x00100bfa                i686_Flush_TSS
-                0x00100c07                i686_GDT_Initialize
- .text          0x00100d89      0x270 build/i686_debug/kernel/arch/i686/idt.o
-                0x00100dea                i686_ISR_Handler
-                0x00100f25                i686_IDT_SetGate
-                0x00100f86                i686_IDT_EnableGate
-                0x00100fa6                i686_IDT_DisableGate
-                0x00100fc6                i686_ISR_RegisterHandler
-                0x00100fe4                i686_IDT_Initialize
- .text          0x00100ff9       0xd9 build/i686_debug/kernel/arch/i686/irq.o
-                0x00101000                i686_IRQ_Handler
-                0x00101078                i686_IRQ_Initialize
-                0x001010bf                i686_IRQ_RegisterHandler
- .text          0x001010d2      0x299 build/i686_debug/kernel/arch/i686/pic.o
-                0x00101123                i686_PIC_Configure
-                0x001011f7                i686_PIC_SendEndOfInterrupt
-                0x0010121e                i686_PIC_Disable
-                0x0010124f                i686_PIC_Mask
-                0x00101293                i686_PIC_Unmask
-                0x001012d9                i686_PIC_ReadIrqRequestRegister
-                0x00101322                i686_PIC_ReadInServiceRegister
- .text          0x0010136b      0x4d0 build/i686_debug/kernel/arch/i686/vga_text.o
-                0x0010138a                VGA_putchr
-                0x001013be                VGA_putcolor
-                0x001013f5                VGA_getchr
-                0x0010141b                VGA_getcolor
-                0x00101444                VGA_setcursor
-                0x001014ad                VGA_clrscr
-                0x00101525                VGA_scrollback
-                0x001015f2                VGA_delchar
-                0x00101726                VGA_putc
- .text          0x0010183b      0x2e5 build/i686_debug/kernel/arch/driver/ata.o
-                0x001018ae                read_sectors_ATA_PIO
-                0x001019bb                write_sectors_ATA_PIO
-                0x00101aff                ata_interrupt_handler
-                0x00101b05                ata_init
- .text          0x00101b20      0x358 build/i686_debug/kernel/arch/driver/fdc.o
-                0x00101b5c                FDC_send_command
-                0x00101b9a                FDC_wait_for_ready
-                0x00101bf7                FDC_reset
-                0x00101cd2                init_fdc
-                0x00101d23                FDC_calibrate_drive
-                0x00101dba                FDC_read_sector
-                0x00101e4b                fdc_irq_handler
- .text          0x00101e78      0x236 build/i686_debug/kernel/arch/driver/key.o
-                0x00101e95                keyboardIRQHandler
-                0x00101f9d                init_keyboard
-                0x00101fb8                getchar
-                0x0010200f                getchar_locking
-                0x00102060                gets
- .text          0x001020ae      0x4a7 build/i686_debug/kernel/arch/driver/pmm.o
-                0x001020be                pmm_init
-                0x00102407                pmm_claim
-                0x001024e6                pmm_free
- *fill*         0x00102555        0xb 
- .text          0x00102560      0xa6a build/i686_debug/kernel/arch/i686/isr.o
-                0x0010258a                i686_ISR0
-                0x00102590                i686_ISR1
-                0x00102596                i686_ISR2
-                0x0010259c                i686_ISR3
-                0x001025a2                i686_ISR4
-                0x001025a8                i686_ISR5
-                0x001025ae                i686_ISR6
-                0x001025b4                i686_ISR7
-                0x001025ba                i686_ISR8
-                0x001025be                i686_ISR9
-                0x001025c4                i686_ISR10
-                0x001025c8                i686_ISR11
-                0x001025cc                i686_ISR12
-                0x001025d0                i686_ISR13
-                0x001025d4                i686_ISR14
-                0x001025d8                i686_ISR15
-                0x001025de                i686_ISR16
-                0x001025e7                i686_ISR17
-                0x001025ee                i686_ISR18
-                0x001025f7                i686_ISR19
-                0x00102600                i686_ISR20
-                0x00102609                i686_ISR21
-                0x00102610                i686_ISR22
-                0x00102619                i686_ISR23
-                0x00102622                i686_ISR24
-                0x0010262b                i686_ISR25
-                0x00102634                i686_ISR26
-                0x0010263d                i686_ISR27
-                0x00102646                i686_ISR28
-                0x0010264f                i686_ISR29
-                0x00102658                i686_ISR30
-                0x00102661                i686_ISR31
-                0x0010266a                i686_ISR32
-                0x00102673                i686_ISR33
-                0x0010267c                i686_ISR34
-                0x00102685                i686_ISR35
-                0x0010268e                i686_ISR36
-                0x00102697                i686_ISR37
-                0x001026a0                i686_ISR38
-                0x001026a9                i686_ISR39
-                0x001026b2                i686_ISR40
-                0x001026bb                i686_ISR41
-                0x001026c4                i686_ISR42
-                0x001026cd                i686_ISR43
-                0x001026d6                i686_ISR44
-                0x001026df                i686_ISR45
-                0x001026e8                i686_ISR46
-                0x001026f1                i686_ISR47
-                0x001026fa                i686_ISR48
-                0x00102703                i686_ISR49
-                0x0010270c                i686_ISR50
-                0x00102715                i686_ISR51
-                0x0010271e                i686_ISR52
-                0x00102727                i686_ISR53
-                0x00102730                i686_ISR54
-                0x00102739                i686_ISR55
-                0x00102742                i686_ISR56
-                0x0010274b                i686_ISR57
-                0x00102754                i686_ISR58
-                0x0010275d                i686_ISR59
-                0x00102766                i686_ISR60
-                0x0010276f                i686_ISR61
-                0x00102778                i686_ISR62
-                0x00102781                i686_ISR63
-                0x0010278a                i686_ISR64
-                0x00102793                i686_ISR65
-                0x0010279c                i686_ISR66
-                0x001027a5                i686_ISR67
-                0x001027ae                i686_ISR68
-                0x001027b7                i686_ISR69
-                0x001027c0                i686_ISR70
-                0x001027c9                i686_ISR71
-                0x001027d2                i686_ISR72
-                0x001027db                i686_ISR73
-                0x001027e4                i686_ISR74
-                0x001027ed                i686_ISR75
-                0x001027f6                i686_ISR76
-                0x001027ff                i686_ISR77
-                0x00102808                i686_ISR78
-                0x00102811                i686_ISR79
-                0x0010281a                i686_ISR80
-                0x00102823                i686_ISR81
-                0x0010282c                i686_ISR82
-                0x00102835                i686_ISR83
-                0x0010283e                i686_ISR84
-                0x00102847                i686_ISR85
-                0x00102850                i686_ISR86
-                0x00102859                i686_ISR87
-                0x00102862                i686_ISR88
-                0x0010286b                i686_ISR89
-                0x00102874                i686_ISR90
-                0x0010287d                i686_ISR91
-                0x00102886                i686_ISR92
-                0x0010288f                i686_ISR93
-                0x00102898                i686_ISR94
-                0x001028a1                i686_ISR95
-                0x001028aa                i686_ISR96
-                0x001028b3                i686_ISR97
-                0x001028bc                i686_ISR98
-                0x001028c5                i686_ISR99
-                0x001028ce                i686_ISR100
-                0x001028d7                i686_ISR101
-                0x001028e0                i686_ISR102
-                0x001028e9                i686_ISR103
-                0x001028f2                i686_ISR104
-                0x001028fb                i686_ISR105
-                0x00102904                i686_ISR106
-                0x0010290d                i686_ISR107
-                0x00102916                i686_ISR108
-                0x0010291f                i686_ISR109
-                0x00102928                i686_ISR110
-                0x00102931                i686_ISR111
-                0x0010293a                i686_ISR112
-                0x00102943                i686_ISR113
-                0x0010294c                i686_ISR114
-                0x00102955                i686_ISR115
-                0x0010295e                i686_ISR116
-                0x00102967                i686_ISR117
-                0x00102970                i686_ISR118
-                0x00102979                i686_ISR119
-                0x00102982                i686_ISR120
-                0x0010298b                i686_ISR121
-                0x00102994                i686_ISR122
-                0x0010299d                i686_ISR123
-                0x001029a6                i686_ISR124
-                0x001029af                i686_ISR125
-                0x001029b8                i686_ISR126
-                0x001029c1                i686_ISR127
-                0x001029ca                i686_ISR128
-                0x001029d6                i686_ISR129
-                0x001029e2                i686_ISR130
-                0x001029ee                i686_ISR131
-                0x001029fa                i686_ISR132
-                0x00102a06                i686_ISR133
-                0x00102a12                i686_ISR134
-                0x00102a1e                i686_ISR135
-                0x00102a2a                i686_ISR136
-                0x00102a36                i686_ISR137
-                0x00102a42                i686_ISR138
-                0x00102a4e                i686_ISR139
-                0x00102a5a                i686_ISR140
-                0x00102a66                i686_ISR141
-                0x00102a72                i686_ISR142
-                0x00102a7e                i686_ISR143
-                0x00102a8a                i686_ISR144
-                0x00102a96                i686_ISR145
-                0x00102aa2                i686_ISR146
-                0x00102aae                i686_ISR147
-                0x00102aba                i686_ISR148
-                0x00102ac6                i686_ISR149
-                0x00102ad2                i686_ISR150
-                0x00102ade                i686_ISR151
-                0x00102aea                i686_ISR152
-                0x00102af6                i686_ISR153
-                0x00102b02                i686_ISR154
-                0x00102b0e                i686_ISR155
-                0x00102b1a                i686_ISR156
-                0x00102b26                i686_ISR157
-                0x00102b32                i686_ISR158
-                0x00102b3e                i686_ISR159
-                0x00102b4a                i686_ISR160
-                0x00102b56                i686_ISR161
-                0x00102b62                i686_ISR162
-                0x00102b6e                i686_ISR163
-                0x00102b7a                i686_ISR164
-                0x00102b86                i686_ISR165
-                0x00102b92                i686_ISR166
-                0x00102b9e                i686_ISR167
-                0x00102baa                i686_ISR168
-                0x00102bb6                i686_ISR169
-                0x00102bc2                i686_ISR170
-                0x00102bce                i686_ISR171
-                0x00102bda                i686_ISR172
-                0x00102be6                i686_ISR173
-                0x00102bf2                i686_ISR174
-                0x00102bfe                i686_ISR175
-                0x00102c0a                i686_ISR176
-                0x00102c16                i686_ISR177
-                0x00102c22                i686_ISR178
-                0x00102c2e                i686_ISR179
-                0x00102c3a                i686_ISR180
-                0x00102c46                i686_ISR181
-                0x00102c52                i686_ISR182
-                0x00102c5e                i686_ISR183
-                0x00102c6a                i686_ISR184
-                0x00102c76                i686_ISR185
-                0x00102c82                i686_ISR186
-                0x00102c8e                i686_ISR187
-                0x00102c9a                i686_ISR188
-                0x00102ca6                i686_ISR189
-                0x00102cb2                i686_ISR190
-                0x00102cbe                i686_ISR191
-                0x00102cca                i686_ISR192
-                0x00102cd6                i686_ISR193
-                0x00102ce2                i686_ISR194
-                0x00102cee                i686_ISR195
-                0x00102cfa                i686_ISR196
-                0x00102d06                i686_ISR197
-                0x00102d12                i686_ISR198
-                0x00102d1e                i686_ISR199
-                0x00102d2a                i686_ISR200
-                0x00102d36                i686_ISR201
-                0x00102d42                i686_ISR202
-                0x00102d4e                i686_ISR203
-                0x00102d5a                i686_ISR204
-                0x00102d66                i686_ISR205
-                0x00102d72                i686_ISR206
-                0x00102d7e                i686_ISR207
-                0x00102d8a                i686_ISR208
-                0x00102d96                i686_ISR209
-                0x00102da2                i686_ISR210
-                0x00102dae                i686_ISR211
-                0x00102dba                i686_ISR212
-                0x00102dc6                i686_ISR213
-                0x00102dd2                i686_ISR214
-                0x00102dde                i686_ISR215
-                0x00102dea                i686_ISR216
-                0x00102df6                i686_ISR217
-                0x00102e02                i686_ISR218
-                0x00102e0e                i686_ISR219
-                0x00102e1a                i686_ISR220
-                0x00102e26                i686_ISR221
-                0x00102e32                i686_ISR222
-                0x00102e3e                i686_ISR223
-                0x00102e4a                i686_ISR224
-                0x00102e56                i686_ISR225
-                0x00102e62                i686_ISR226
-                0x00102e6e                i686_ISR227
-                0x00102e7a                i686_ISR228
-                0x00102e86                i686_ISR229
-                0x00102e92                i686_ISR230
-                0x00102e9e                i686_ISR231
-                0x00102eaa                i686_ISR232
-                0x00102eb6                i686_ISR233
-                0x00102ec2                i686_ISR234
-                0x00102ece                i686_ISR235
-                0x00102eda                i686_ISR236
-                0x00102ee6                i686_ISR237
-                0x00102ef2                i686_ISR238
-                0x00102efe                i686_ISR239
-                0x00102f0a                i686_ISR240
-                0x00102f16                i686_ISR241
-                0x00102f22                i686_ISR242
-                0x00102f2e                i686_ISR243
-                0x00102f3a                i686_ISR244
-                0x00102f46                i686_ISR245
-                0x00102f52                i686_ISR246
-                0x00102f5e                i686_ISR247
-                0x00102f6a                i686_ISR248
-                0x00102f76                i686_ISR249
-                0x00102f82                i686_ISR250
-                0x00102f8e                i686_ISR251
-                0x00102f9a                i686_ISR252
-                0x00102fa6                i686_ISR253
-                0x00102fb2                i686_ISR254
-                0x00102fbe                i686_ISR255
- *fill*         0x00102fca        0x6 
- .text          0x00102fd0       0x39 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
- *fill*         0x00103009        0x7 
- .text          0x00103010      0x11a /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
-                0x00103010                __udivdi3
- *fill*         0x0010312a        0x6 
- .text          0x00103130      0x13e /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
-                0x00103130                __umoddi3
-                0x0010326e                        __text_end = .
+ .text          0x00100265       0x71 build/i686_debug/kernel/debug.o
+                0x00100265                logf
+ .text          0x001002d6       0xc3 build/i686_debug/kernel/memory.o
+                0x001002d6                memcpy
+                0x00100317                memset
+                0x0010034a                memcmp
+ .text          0x00100399      0x68e build/i686_debug/kernel/stdio.o
+                0x00100399                fputc
+                0x001003bc                fputs
+                0x001003ee                fprintf_unsigned
+                0x00100495                fprintf_signed
+                0x001004f5                vfprintf
+                0x0010086c                fprintf
+                0x00100890                fprint_buffer
+                0x00100935                putc
+                0x00100956                puts
+                0x0010096f                printf
+                0x00100992                print_buffer
+                0x001009ae                debugc
+                0x001009cf                debugs
+                0x001009e8                debugf
+                0x00100a0b                debug_buffer
+ .text          0x00100a27      0x10b build/i686_debug/kernel/string.o
+                0x00100a27                strchr
+                0x00100a65                strcpy
+                0x00100ab7                strlen
+                0x00100add                islower
+                0x00100b06                toupper
+ .text          0x00100b32       0x4b build/i686_debug/kernel/hal/hal.o
+                0x00100b32                HAL_Initialize
+ .text          0x00100b7d       0xa5 build/i686_debug/kernel/hal/vfs.o
+                0x00100b7d                VFS_Write
+ .text          0x00100c22       0x43 build/i686_debug/kernel/arch/i686/e9.o
+                0x00100c41                e9_putc
+ .text          0x00100c65      0x1ba build/i686_debug/kernel/arch/i686/gdt.o
+                0x00100c90                i686_Flush_TSS
+                0x00100c9d                i686_GDT_Initialize
+ .text          0x00100e1f      0x270 build/i686_debug/kernel/arch/i686/idt.o
+                0x00100e80                i686_ISR_Handler
+                0x00100fbb                i686_IDT_SetGate
+                0x0010101c                i686_IDT_EnableGate
+                0x0010103c                i686_IDT_DisableGate
+                0x0010105c                i686_ISR_RegisterHandler
+                0x0010107a                i686_IDT_Initialize
+ .text          0x0010108f       0xd9 build/i686_debug/kernel/arch/i686/irq.o
+                0x00101096                i686_IRQ_Handler
+                0x0010110e                i686_IRQ_Initialize
+                0x00101155                i686_IRQ_RegisterHandler
+ .text          0x00101168      0x299 build/i686_debug/kernel/arch/i686/pic.o
+                0x001011b9                i686_PIC_Configure
+                0x0010128d                i686_PIC_SendEndOfInterrupt
+                0x001012b4                i686_PIC_Disable
+                0x001012e5                i686_PIC_Mask
+                0x00101329                i686_PIC_Unmask
+                0x0010136f                i686_PIC_ReadIrqRequestRegister
+                0x001013b8                i686_PIC_ReadInServiceRegister
+ .text          0x00101401      0x4d0 build/i686_debug/kernel/arch/i686/vga_text.o
+                0x00101420                VGA_putchr
+                0x00101454                VGA_putcolor
+                0x0010148b                VGA_getchr
+                0x001014b1                VGA_getcolor
+                0x001014da                VGA_setcursor
+                0x00101543                VGA_clrscr
+                0x001015bb                VGA_scrollback
+                0x00101688                VGA_delchar
+                0x001017bc                VGA_putc
+ .text          0x001018d1      0x2e5 build/i686_debug/kernel/arch/driver/ata.o
+                0x00101944                read_sectors_ATA_PIO
+                0x00101a51                write_sectors_ATA_PIO
+                0x00101b95                ata_interrupt_handler
+                0x00101b9b                ata_init
+ .text          0x00101bb6      0x358 build/i686_debug/kernel/arch/driver/fdc.o
+                0x00101bf2                FDC_send_command
+                0x00101c30                FDC_wait_for_ready
+                0x00101c8d                FDC_reset
+                0x00101d68                init_fdc
+                0x00101db9                FDC_calibrate_drive
+                0x00101e50                FDC_read_sector
+                0x00101ee1                fdc_irq_handler
+ .text          0x00101f0e      0x236 build/i686_debug/kernel/arch/driver/key.o
+                0x00101f2b                keyboardIRQHandler
+                0x00102033                init_keyboard
+                0x0010204e                getchar
+                0x001020a5                getchar_locking
+                0x001020f6                gets
+ .text          0x00102144      0x6c3 build/i686_debug/kernel/arch/driver/pmm.o
+                0x00102144                pmm_init
+                0x00102622                is_page_free
+                0x00102676                mark_page_as_used
+                0x001026fa                mark_page_as_free
+                0x0010277d                alloc_page
+                0x001027df                free_page
+ *fill*         0x00102807        0x9 
+ .text          0x00102810      0xa6a build/i686_debug/kernel/arch/i686/isr.o
+                0x0010283a                i686_ISR0
+                0x00102840                i686_ISR1
+                0x00102846                i686_ISR2
+                0x0010284c                i686_ISR3
+                0x00102852                i686_ISR4
+                0x00102858                i686_ISR5
+                0x0010285e                i686_ISR6
+                0x00102864                i686_ISR7
+                0x0010286a                i686_ISR8
+                0x0010286e                i686_ISR9
+                0x00102874                i686_ISR10
+                0x00102878                i686_ISR11
+                0x0010287c                i686_ISR12
+                0x00102880                i686_ISR13
+                0x00102884                i686_ISR14
+                0x00102888                i686_ISR15
+                0x0010288e                i686_ISR16
+                0x00102897                i686_ISR17
+                0x0010289e                i686_ISR18
+                0x001028a7                i686_ISR19
+                0x001028b0                i686_ISR20
+                0x001028b9                i686_ISR21
+                0x001028c0                i686_ISR22
+                0x001028c9                i686_ISR23
+                0x001028d2                i686_ISR24
+                0x001028db                i686_ISR25
+                0x001028e4                i686_ISR26
+                0x001028ed                i686_ISR27
+                0x001028f6                i686_ISR28
+                0x001028ff                i686_ISR29
+                0x00102908                i686_ISR30
+                0x00102911                i686_ISR31
+                0x0010291a                i686_ISR32
+                0x00102923                i686_ISR33
+                0x0010292c                i686_ISR34
+                0x00102935                i686_ISR35
+                0x0010293e                i686_ISR36
+                0x00102947                i686_ISR37
+                0x00102950                i686_ISR38
+                0x00102959                i686_ISR39
+                0x00102962                i686_ISR40
+                0x0010296b                i686_ISR41
+                0x00102974                i686_ISR42
+                0x0010297d                i686_ISR43
+                0x00102986                i686_ISR44
+                0x0010298f                i686_ISR45
+                0x00102998                i686_ISR46
+                0x001029a1                i686_ISR47
+                0x001029aa                i686_ISR48
+                0x001029b3                i686_ISR49
+                0x001029bc                i686_ISR50
+                0x001029c5                i686_ISR51
+                0x001029ce                i686_ISR52
+                0x001029d7                i686_ISR53
+                0x001029e0                i686_ISR54
+                0x001029e9                i686_ISR55
+                0x001029f2                i686_ISR56
+                0x001029fb                i686_ISR57
+                0x00102a04                i686_ISR58
+                0x00102a0d                i686_ISR59
+                0x00102a16                i686_ISR60
+                0x00102a1f                i686_ISR61
+                0x00102a28                i686_ISR62
+                0x00102a31                i686_ISR63
+                0x00102a3a                i686_ISR64
+                0x00102a43                i686_ISR65
+                0x00102a4c                i686_ISR66
+                0x00102a55                i686_ISR67
+                0x00102a5e                i686_ISR68
+                0x00102a67                i686_ISR69
+                0x00102a70                i686_ISR70
+                0x00102a79                i686_ISR71
+                0x00102a82                i686_ISR72
+                0x00102a8b                i686_ISR73
+                0x00102a94                i686_ISR74
+                0x00102a9d                i686_ISR75
+                0x00102aa6                i686_ISR76
+                0x00102aaf                i686_ISR77
+                0x00102ab8                i686_ISR78
+                0x00102ac1                i686_ISR79
+                0x00102aca                i686_ISR80
+                0x00102ad3                i686_ISR81
+                0x00102adc                i686_ISR82
+                0x00102ae5                i686_ISR83
+                0x00102aee                i686_ISR84
+                0x00102af7                i686_ISR85
+                0x00102b00                i686_ISR86
+                0x00102b09                i686_ISR87
+                0x00102b12                i686_ISR88
+                0x00102b1b                i686_ISR89
+                0x00102b24                i686_ISR90
+                0x00102b2d                i686_ISR91
+                0x00102b36                i686_ISR92
+                0x00102b3f                i686_ISR93
+                0x00102b48                i686_ISR94
+                0x00102b51                i686_ISR95
+                0x00102b5a                i686_ISR96
+                0x00102b63                i686_ISR97
+                0x00102b6c                i686_ISR98
+                0x00102b75                i686_ISR99
+                0x00102b7e                i686_ISR100
+                0x00102b87                i686_ISR101
+                0x00102b90                i686_ISR102
+                0x00102b99                i686_ISR103
+                0x00102ba2                i686_ISR104
+                0x00102bab                i686_ISR105
+                0x00102bb4                i686_ISR106
+                0x00102bbd                i686_ISR107
+                0x00102bc6                i686_ISR108
+                0x00102bcf                i686_ISR109
+                0x00102bd8                i686_ISR110
+                0x00102be1                i686_ISR111
+                0x00102bea                i686_ISR112
+                0x00102bf3                i686_ISR113
+                0x00102bfc                i686_ISR114
+                0x00102c05                i686_ISR115
+                0x00102c0e                i686_ISR116
+                0x00102c17                i686_ISR117
+                0x00102c20                i686_ISR118
+                0x00102c29                i686_ISR119
+                0x00102c32                i686_ISR120
+                0x00102c3b                i686_ISR121
+                0x00102c44                i686_ISR122
+                0x00102c4d                i686_ISR123
+                0x00102c56                i686_ISR124
+                0x00102c5f                i686_ISR125
+                0x00102c68                i686_ISR126
+                0x00102c71                i686_ISR127
+                0x00102c7a                i686_ISR128
+                0x00102c86                i686_ISR129
+                0x00102c92                i686_ISR130
+                0x00102c9e                i686_ISR131
+                0x00102caa                i686_ISR132
+                0x00102cb6                i686_ISR133
+                0x00102cc2                i686_ISR134
+                0x00102cce                i686_ISR135
+                0x00102cda                i686_ISR136
+                0x00102ce6                i686_ISR137
+                0x00102cf2                i686_ISR138
+                0x00102cfe                i686_ISR139
+                0x00102d0a                i686_ISR140
+                0x00102d16                i686_ISR141
+                0x00102d22                i686_ISR142
+                0x00102d2e                i686_ISR143
+                0x00102d3a                i686_ISR144
+                0x00102d46                i686_ISR145
+                0x00102d52                i686_ISR146
+                0x00102d5e                i686_ISR147
+                0x00102d6a                i686_ISR148
+                0x00102d76                i686_ISR149
+                0x00102d82                i686_ISR150
+                0x00102d8e                i686_ISR151
+                0x00102d9a                i686_ISR152
+                0x00102da6                i686_ISR153
+                0x00102db2                i686_ISR154
+                0x00102dbe                i686_ISR155
+                0x00102dca                i686_ISR156
+                0x00102dd6                i686_ISR157
+                0x00102de2                i686_ISR158
+                0x00102dee                i686_ISR159
+                0x00102dfa                i686_ISR160
+                0x00102e06                i686_ISR161
+                0x00102e12                i686_ISR162
+                0x00102e1e                i686_ISR163
+                0x00102e2a                i686_ISR164
+                0x00102e36                i686_ISR165
+                0x00102e42                i686_ISR166
+                0x00102e4e                i686_ISR167
+                0x00102e5a                i686_ISR168
+                0x00102e66                i686_ISR169
+                0x00102e72                i686_ISR170
+                0x00102e7e                i686_ISR171
+                0x00102e8a                i686_ISR172
+                0x00102e96                i686_ISR173
+                0x00102ea2                i686_ISR174
+                0x00102eae                i686_ISR175
+                0x00102eba                i686_ISR176
+                0x00102ec6                i686_ISR177
+                0x00102ed2                i686_ISR178
+                0x00102ede                i686_ISR179
+                0x00102eea                i686_ISR180
+                0x00102ef6                i686_ISR181
+                0x00102f02                i686_ISR182
+                0x00102f0e                i686_ISR183
+                0x00102f1a                i686_ISR184
+                0x00102f26                i686_ISR185
+                0x00102f32                i686_ISR186
+                0x00102f3e                i686_ISR187
+                0x00102f4a                i686_ISR188
+                0x00102f56                i686_ISR189
+                0x00102f62                i686_ISR190
+                0x00102f6e                i686_ISR191
+                0x00102f7a                i686_ISR192
+                0x00102f86                i686_ISR193
+                0x00102f92                i686_ISR194
+                0x00102f9e                i686_ISR195
+                0x00102faa                i686_ISR196
+                0x00102fb6                i686_ISR197
+                0x00102fc2                i686_ISR198
+                0x00102fce                i686_ISR199
+                0x00102fda                i686_ISR200
+                0x00102fe6                i686_ISR201
+                0x00102ff2                i686_ISR202
+                0x00102ffe                i686_ISR203
+                0x0010300a                i686_ISR204
+                0x00103016                i686_ISR205
+                0x00103022                i686_ISR206
+                0x0010302e                i686_ISR207
+                0x0010303a                i686_ISR208
+                0x00103046                i686_ISR209
+                0x00103052                i686_ISR210
+                0x0010305e                i686_ISR211
+                0x0010306a                i686_ISR212
+                0x00103076                i686_ISR213
+                0x00103082                i686_ISR214
+                0x0010308e                i686_ISR215
+                0x0010309a                i686_ISR216
+                0x001030a6                i686_ISR217
+                0x001030b2                i686_ISR218
+                0x001030be                i686_ISR219
+                0x001030ca                i686_ISR220
+                0x001030d6                i686_ISR221
+                0x001030e2                i686_ISR222
+                0x001030ee                i686_ISR223
+                0x001030fa                i686_ISR224
+                0x00103106                i686_ISR225
+                0x00103112                i686_ISR226
+                0x0010311e                i686_ISR227
+                0x0010312a                i686_ISR228
+                0x00103136                i686_ISR229
+                0x00103142                i686_ISR230
+                0x0010314e                i686_ISR231
+                0x0010315a                i686_ISR232
+                0x00103166                i686_ISR233
+                0x00103172                i686_ISR234
+                0x0010317e                i686_ISR235
+                0x0010318a                i686_ISR236
+                0x00103196                i686_ISR237
+                0x001031a2                i686_ISR238
+                0x001031ae                i686_ISR239
+                0x001031ba                i686_ISR240
+                0x001031c6                i686_ISR241
+                0x001031d2                i686_ISR242
+                0x001031de                i686_ISR243
+                0x001031ea                i686_ISR244
+                0x001031f6                i686_ISR245
+                0x00103202                i686_ISR246
+                0x0010320e                i686_ISR247
+                0x0010321a                i686_ISR248
+                0x00103226                i686_ISR249
+                0x00103232                i686_ISR250
+                0x0010323e                i686_ISR251
+                0x0010324a                i686_ISR252
+                0x00103256                i686_ISR253
+                0x00103262                i686_ISR254
+                0x0010326e                i686_ISR255
+ *fill*         0x0010327a        0x6 
+ .text          0x00103280       0x39 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
+ *fill*         0x001032b9        0x7 
+ .text          0x001032c0      0x11a /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
+                0x001032c0                __udivdi3
+ *fill*         0x001033da        0x6 
+ .text          0x001033e0      0x13e /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
+                0x001033e0                __umoddi3
+                0x0010351e                        __text_end = .
 
-.init           0x0010326e        0xf
- .init          0x0010326e        0x3 build/i686_debug/kernel/crti.o
-                0x0010326e                _init
- .init          0x00103271        0x5 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
- .init          0x00103276        0x5 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
- .init          0x0010327b        0x2 build/i686_debug/kernel/crtn.o
+.init           0x0010351e        0xf
+ .init          0x0010351e        0x3 build/i686_debug/kernel/crti.o
+                0x0010351e                _init
+ .init          0x00103521        0x5 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
+ .init          0x00103526        0x5 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
+ .init          0x0010352b        0x2 build/i686_debug/kernel/crtn.o
 
-.fini           0x0010327d        0xa
- .fini          0x0010327d        0x3 build/i686_debug/kernel/crti.o
-                0x0010327d                _fini
- .fini          0x00103280        0x5 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
- .fini          0x00103285        0x2 build/i686_debug/kernel/crtn.o
+.fini           0x0010352d        0xa
+ .fini          0x0010352d        0x3 build/i686_debug/kernel/crti.o
+                0x0010352d                _fini
+ .fini          0x00103530        0x5 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
+ .fini          0x00103535        0x2 build/i686_debug/kernel/crtn.o
 
-.iplt           0x00103287        0x0
- .iplt          0x00103287        0x0 build/i686_debug/kernel/crti.o
+.iplt           0x00103537        0x0
+ .iplt          0x00103537        0x0 build/i686_debug/kernel/crti.o
 
-.rodata         0x001032a0      0x664
-                0x001032a0                        __rodata_start = .
+.rodata         0x00103540      0x6b7
+                0x00103540                        __rodata_start = .
  *(.rodata)
- .rodata        0x001032a0       0x19 build/i686_debug/kernel/_start.o
- *fill*         0x001032b9        0x3 
- .rodata        0x001032bc       0x52 build/i686_debug/kernel/debug.o
- *fill*         0x0010330e        0x2 
- .rodata        0x00103310       0xc2 build/i686_debug/kernel/stdio.o
-                0x00103310                g_HexChars
- *fill*         0x001033d2        0xe 
- .rodata        0x001033e0      0x34f build/i686_debug/kernel/arch/i686/idt.o
- *fill*         0x0010372f        0x1 
- .rodata        0x00103730       0x25 build/i686_debug/kernel/arch/i686/irq.o
- *fill*         0x00103755        0x3 
- .rodata        0x00103758       0xe5 build/i686_debug/kernel/arch/driver/fdc.o
- .rodata        0x0010383d       0xc7 build/i686_debug/kernel/arch/driver/key.o
-                0x00103904                        __rodata_end = .
+ .rodata        0x00103540       0x27 build/i686_debug/kernel/_start.o
+ *fill*         0x00103567        0x1 
+ .rodata        0x00103568       0x52 build/i686_debug/kernel/debug.o
+ *fill*         0x001035ba        0x2 
+ .rodata        0x001035bc       0xc2 build/i686_debug/kernel/stdio.o
+                0x001035bc                g_HexChars
+ *fill*         0x0010367e        0x2 
+ .rodata        0x00103680      0x34f build/i686_debug/kernel/arch/i686/idt.o
+ *fill*         0x001039cf        0x1 
+ .rodata        0x001039d0       0x25 build/i686_debug/kernel/arch/i686/irq.o
+ *fill*         0x001039f5        0x3 
+ .rodata        0x001039f8       0xe5 build/i686_debug/kernel/arch/driver/fdc.o
+ .rodata        0x00103add       0xc7 build/i686_debug/kernel/arch/driver/key.o
+ .rodata        0x00103ba4       0x53 build/i686_debug/kernel/arch/driver/pmm.o
+                0x00103bf7                        __rodata_end = .
 
-.eh_frame       0x00103904       0xc0
- .eh_frame      0x00103904        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
- .eh_frame      0x00103904        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
+.eh_frame       0x00103bf8       0xc0
+ .eh_frame      0x00103bf8        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
+ .eh_frame      0x00103bf8        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
                                   0x4 (size before relaxing)
- .eh_frame      0x00103904       0x64 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
- .eh_frame      0x00103968       0x5c /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
+ .eh_frame      0x00103bf8       0x64 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
+ .eh_frame      0x00103c5c       0x5c /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
                                  0x74 (size before relaxing)
 
-.rel.dyn        0x001039c4        0x0
- .rel.got       0x001039c4        0x0 build/i686_debug/kernel/crti.o
- .rel.iplt      0x001039c4        0x0 build/i686_debug/kernel/crti.o
- .rel.text      0x001039c4        0x0 build/i686_debug/kernel/crti.o
+.rel.dyn        0x00103cb8        0x0
+ .rel.got       0x00103cb8        0x0 build/i686_debug/kernel/crti.o
+ .rel.iplt      0x00103cb8        0x0 build/i686_debug/kernel/crti.o
+ .rel.text      0x00103cb8        0x0 build/i686_debug/kernel/crti.o
 
-.data           0x001039e0      0xc20
-                0x001039e0                        __data_start = .
+.data           0x00103cc0      0xc20
+                0x00103cc0                        __data_start = .
  *(.data)
- .data          0x001039e0        0x4 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
-                0x001039e0                __dso_handle
- .data          0x001039e4        0x0 build/i686_debug/kernel/_start.o
- .data          0x001039e4        0x0 build/i686_debug/kernel/debug.o
- .data          0x001039e4        0x0 build/i686_debug/kernel/memory.o
- .data          0x001039e4        0x0 build/i686_debug/kernel/stdio.o
- .data          0x001039e4        0x0 build/i686_debug/kernel/string.o
- .data          0x001039e4        0x0 build/i686_debug/kernel/hal/hal.o
- .data          0x001039e4        0x0 build/i686_debug/kernel/hal/vfs.o
- .data          0x001039e4        0x0 build/i686_debug/kernel/arch/i686/e9.o
- .data          0x001039e4        0x0 build/i686_debug/kernel/arch/i686/gdt.o
- .data          0x001039e4        0x6 build/i686_debug/kernel/arch/i686/idt.o
-                0x001039e4                g_IDTDescriptor
- .data          0x001039ea        0x0 build/i686_debug/kernel/arch/i686/irq.o
- .data          0x001039ea        0x0 build/i686_debug/kernel/arch/i686/pic.o
- *fill*         0x001039ea        0x2 
- .data          0x001039ec        0x4 build/i686_debug/kernel/arch/i686/vga_text.o
-                0x001039ec                g_ScreenBuffer
- .data          0x001039f0        0x0 build/i686_debug/kernel/arch/driver/ata.o
- .data          0x001039f0        0x0 build/i686_debug/kernel/arch/driver/fdc.o
- *fill*         0x001039f0       0x10 
- .data          0x00103a00      0x800 build/i686_debug/kernel/arch/driver/key.o
-                0x00103a00                scancodeToASCII
-                0x00103e00                scancodeToASCII_shift
- .data          0x00104200        0x0 build/i686_debug/kernel/arch/driver/pmm.o
- .data          0x00104200      0x400 build/i686_debug/kernel/arch/i686/isr.o
-                0x00104200                isr_table
- .data          0x00104600        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
- .data          0x00104600        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
- .data          0x00104600        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
-                0x00104600                        __data_end = .
+ .data          0x00103cc0        0x4 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
+                0x00103cc0                __dso_handle
+ .data          0x00103cc4        0x0 build/i686_debug/kernel/_start.o
+ .data          0x00103cc4        0x0 build/i686_debug/kernel/debug.o
+ .data          0x00103cc4        0x0 build/i686_debug/kernel/memory.o
+ .data          0x00103cc4        0x0 build/i686_debug/kernel/stdio.o
+ .data          0x00103cc4        0x0 build/i686_debug/kernel/string.o
+ .data          0x00103cc4        0x0 build/i686_debug/kernel/hal/hal.o
+ .data          0x00103cc4        0x0 build/i686_debug/kernel/hal/vfs.o
+ .data          0x00103cc4        0x0 build/i686_debug/kernel/arch/i686/e9.o
+ .data          0x00103cc4        0x0 build/i686_debug/kernel/arch/i686/gdt.o
+ .data          0x00103cc4        0x6 build/i686_debug/kernel/arch/i686/idt.o
+                0x00103cc4                g_IDTDescriptor
+ .data          0x00103cca        0x0 build/i686_debug/kernel/arch/i686/irq.o
+ .data          0x00103cca        0x0 build/i686_debug/kernel/arch/i686/pic.o
+ *fill*         0x00103cca        0x2 
+ .data          0x00103ccc        0x4 build/i686_debug/kernel/arch/i686/vga_text.o
+                0x00103ccc                g_ScreenBuffer
+ .data          0x00103cd0        0x0 build/i686_debug/kernel/arch/driver/ata.o
+ .data          0x00103cd0        0x0 build/i686_debug/kernel/arch/driver/fdc.o
+ *fill*         0x00103cd0       0x10 
+ .data          0x00103ce0      0x800 build/i686_debug/kernel/arch/driver/key.o
+                0x00103ce0                scancodeToASCII
+                0x001040e0                scancodeToASCII_shift
+ .data          0x001044e0        0x0 build/i686_debug/kernel/arch/driver/pmm.o
+ .data          0x001044e0      0x400 build/i686_debug/kernel/arch/i686/isr.o
+                0x001044e0                isr_table
+ .data          0x001048e0        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
+ .data          0x001048e0        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
+ .data          0x001048e0        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
+                0x001048e0                        __data_end = .
 
-.got            0x00104600        0x0
- .got           0x00104600        0x0 build/i686_debug/kernel/crti.o
+.got            0x001048e0        0x0
+ .got           0x001048e0        0x0 build/i686_debug/kernel/crti.o
 
-.got.plt        0x00104600        0x0
- .got.plt       0x00104600        0x0 build/i686_debug/kernel/crti.o
+.got.plt        0x001048e0        0x0
+ .got.plt       0x001048e0        0x0 build/i686_debug/kernel/crti.o
 
-.igot.plt       0x00104600        0x0
- .igot.plt      0x00104600        0x0 build/i686_debug/kernel/crti.o
+.igot.plt       0x001048e0        0x0
+ .igot.plt      0x001048e0        0x0 build/i686_debug/kernel/crti.o
 
-.ctors          0x00104600        0x8
- .ctors         0x00104600        0x4 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
- .ctors         0x00104604        0x4 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
+.ctors          0x001048e0        0x8
+ .ctors         0x001048e0        0x4 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
+ .ctors         0x001048e4        0x4 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
 
-.dtors          0x00104608        0x8
- .dtors         0x00104608        0x4 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
- .dtors         0x0010460c        0x4 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
-                0x0010460c                __DTOR_END__
+.dtors          0x001048e8        0x8
+ .dtors         0x001048e8        0x4 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
+ .dtors         0x001048ec        0x4 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
+                0x001048ec                __DTOR_END__
 
 .tm_clone_table
-                0x00104610        0x0
+                0x001048f0        0x0
  .tm_clone_table
-                0x00104610        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
+                0x001048f0        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
  .tm_clone_table
-                0x00104610        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
+                0x001048f0        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
 
-.bss            0x00104620      0xf90
-                0x00104620                        __bss_start = .
+.bss            0x00104900      0xf90
+                0x00104900                        __bss_start = .
  *(.bss)
- .bss           0x00104620       0x20 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
- .bss           0x00104640        0x0 build/i686_debug/kernel/_start.o
- .bss           0x00104640        0x0 build/i686_debug/kernel/debug.o
- .bss           0x00104640        0x0 build/i686_debug/kernel/memory.o
- .bss           0x00104640        0x0 build/i686_debug/kernel/stdio.o
- .bss           0x00104640        0x0 build/i686_debug/kernel/string.o
- .bss           0x00104640        0x0 build/i686_debug/kernel/hal/hal.o
- .bss           0x00104640        0x0 build/i686_debug/kernel/hal/vfs.o
- .bss           0x00104640        0x0 build/i686_debug/kernel/arch/i686/e9.o
- .bss           0x00104640       0xc8 build/i686_debug/kernel/arch/i686/gdt.o
-                0x00104640                g_GDTDescriptor
-                0x00104660                g_GDT
-                0x001046a0                g_TSS
- *fill*         0x00104708       0x18 
- .bss           0x00104720      0xc00 build/i686_debug/kernel/arch/i686/idt.o
-                0x00104720                g_IDT
-                0x00104f20                g_ISRHandlers
- .bss           0x00105320       0x40 build/i686_debug/kernel/arch/i686/irq.o
-                0x00105320                g_IRQHandlers
- .bss           0x00105360        0xc build/i686_debug/kernel/arch/i686/pic.o
-                0x00105360                PIC_ICW1
-                0x00105364                PIC_ICW4
-                0x00105368                PIC_CMD
- .bss           0x0010536c        0x8 build/i686_debug/kernel/arch/i686/vga_text.o
-                0x0010536c                g_ScreenX
-                0x00105370                g_ScreenY
- .bss           0x00105374        0x0 build/i686_debug/kernel/arch/driver/ata.o
- .bss           0x00105374        0x0 build/i686_debug/kernel/arch/driver/fdc.o
- *fill*         0x00105374        0xc 
- .bss           0x00105380      0x220 build/i686_debug/kernel/arch/driver/key.o
-                0x00105380                buffer
-                0x00105480                index
-                0x00105484                count
-                0x00105488                shift_pressed
-                0x0010548c                ctrl_pressed
- .bss           0x001055a0       0x10 build/i686_debug/kernel/arch/driver/pmm.o
- .bss           0x001055b0        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
- .bss           0x001055b0        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
- .bss           0x001055b0        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
-                0x001055b0                        __bss_end = .
-                0x001055b0                        __end = .
+ .bss           0x00104900       0x20 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
+ .bss           0x00104920        0x0 build/i686_debug/kernel/_start.o
+ .bss           0x00104920        0x0 build/i686_debug/kernel/debug.o
+ .bss           0x00104920        0x0 build/i686_debug/kernel/memory.o
+ .bss           0x00104920        0x0 build/i686_debug/kernel/stdio.o
+ .bss           0x00104920        0x0 build/i686_debug/kernel/string.o
+ .bss           0x00104920        0x0 build/i686_debug/kernel/hal/hal.o
+ .bss           0x00104920        0x0 build/i686_debug/kernel/hal/vfs.o
+ .bss           0x00104920        0x0 build/i686_debug/kernel/arch/i686/e9.o
+ .bss           0x00104920       0xc8 build/i686_debug/kernel/arch/i686/gdt.o
+                0x00104920                g_GDTDescriptor
+                0x00104940                g_GDT
+                0x00104980                g_TSS
+ *fill*         0x001049e8       0x18 
+ .bss           0x00104a00      0xc00 build/i686_debug/kernel/arch/i686/idt.o
+                0x00104a00                g_IDT
+                0x00105200                g_ISRHandlers
+ .bss           0x00105600       0x40 build/i686_debug/kernel/arch/i686/irq.o
+                0x00105600                g_IRQHandlers
+ .bss           0x00105640        0xc build/i686_debug/kernel/arch/i686/pic.o
+                0x00105640                PIC_ICW1
+                0x00105644                PIC_ICW4
+                0x00105648                PIC_CMD
+ .bss           0x0010564c        0x8 build/i686_debug/kernel/arch/i686/vga_text.o
+                0x0010564c                g_ScreenX
+                0x00105650                g_ScreenY
+ .bss           0x00105654        0x0 build/i686_debug/kernel/arch/driver/ata.o
+ .bss           0x00105654        0x0 build/i686_debug/kernel/arch/driver/fdc.o
+ *fill*         0x00105654        0xc 
+ .bss           0x00105660      0x220 build/i686_debug/kernel/arch/driver/key.o
+                0x00105660                buffer
+                0x00105760                index
+                0x00105764                count
+                0x00105768                shift_pressed
+                0x0010576c                ctrl_pressed
+ .bss           0x00105880       0x10 build/i686_debug/kernel/arch/driver/pmm.o
+                0x00105880                page_manager
+ .bss           0x00105890        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtend.o
+ .bss           0x00105890        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
+ .bss           0x00105890        0x0 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
+                0x00105890                        __bss_end = .
+                0x00105890                        __end = .
 LOAD build/i686_debug/kernel/crti.o
 LOAD /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/crtbegin.o
 LOAD build/i686_debug/kernel/_start.o
@@ -618,79 +623,79 @@ OUTPUT(build/i686_debug/kernel/kernel.elf elf32-i386)
  .debug_pubnames
                 0x00000000        0x0 build/i686_debug/kernel/crtn.o
 
-.debug_info     0x00000000     0x38d5
+.debug_info     0x00000000     0x3921
  .debug_info    0x00000000        0x0 build/i686_debug/kernel/crti.o
- .debug_info    0x00000000      0x288 build/i686_debug/kernel/_start.o
- .debug_info    0x00000288      0x1d5 build/i686_debug/kernel/debug.o
- .debug_info    0x0000045d      0x1e8 build/i686_debug/kernel/memory.o
- .debug_info    0x00000645      0x52a build/i686_debug/kernel/stdio.o
- .debug_info    0x00000b6f      0x198 build/i686_debug/kernel/string.o
- .debug_info    0x00000d07      0x1ab build/i686_debug/kernel/hal/hal.o
- .debug_info    0x00000eb2      0x13e build/i686_debug/kernel/hal/vfs.o
- .debug_info    0x00000ff0       0xdb build/i686_debug/kernel/arch/i686/e9.o
- .debug_info    0x000010cb      0x40f build/i686_debug/kernel/arch/i686/gdt.o
- .debug_info    0x000014da      0x46e build/i686_debug/kernel/arch/i686/idt.o
- .debug_info    0x00001948      0x2f1 build/i686_debug/kernel/arch/i686/irq.o
- .debug_info    0x00001c39      0x294 build/i686_debug/kernel/arch/i686/pic.o
- .debug_info    0x00001ecd      0x373 build/i686_debug/kernel/arch/i686/vga_text.o
- .debug_info    0x00002240      0x3ca build/i686_debug/kernel/arch/driver/ata.o
- .debug_info    0x0000260a      0x419 build/i686_debug/kernel/arch/driver/fdc.o
- .debug_info    0x00002a23      0x385 build/i686_debug/kernel/arch/driver/key.o
- .debug_info    0x00002da8      0x454 build/i686_debug/kernel/arch/driver/pmm.o
- .debug_info    0x000031fc       0x4e build/i686_debug/kernel/arch/i686/isr.o
- .debug_info    0x0000324a        0x0 build/i686_debug/kernel/crtn.o
- .debug_info    0x0000324a      0x33a /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
- .debug_info    0x00003584      0x351 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
+ .debug_info    0x00000000      0x31d build/i686_debug/kernel/_start.o
+ .debug_info    0x0000031d      0x1d5 build/i686_debug/kernel/debug.o
+ .debug_info    0x000004f2      0x1e8 build/i686_debug/kernel/memory.o
+ .debug_info    0x000006da      0x52a build/i686_debug/kernel/stdio.o
+ .debug_info    0x00000c04      0x198 build/i686_debug/kernel/string.o
+ .debug_info    0x00000d9c      0x1af build/i686_debug/kernel/hal/hal.o
+ .debug_info    0x00000f4b      0x13e build/i686_debug/kernel/hal/vfs.o
+ .debug_info    0x00001089       0xdb build/i686_debug/kernel/arch/i686/e9.o
+ .debug_info    0x00001164      0x40f build/i686_debug/kernel/arch/i686/gdt.o
+ .debug_info    0x00001573      0x46e build/i686_debug/kernel/arch/i686/idt.o
+ .debug_info    0x000019e1      0x2f1 build/i686_debug/kernel/arch/i686/irq.o
+ .debug_info    0x00001cd2      0x294 build/i686_debug/kernel/arch/i686/pic.o
+ .debug_info    0x00001f66      0x373 build/i686_debug/kernel/arch/i686/vga_text.o
+ .debug_info    0x000022d9      0x3ca build/i686_debug/kernel/arch/driver/ata.o
+ .debug_info    0x000026a3      0x419 build/i686_debug/kernel/arch/driver/fdc.o
+ .debug_info    0x00002abc      0x385 build/i686_debug/kernel/arch/driver/key.o
+ .debug_info    0x00002e41      0x407 build/i686_debug/kernel/arch/driver/pmm.o
+ .debug_info    0x00003248       0x4e build/i686_debug/kernel/arch/i686/isr.o
+ .debug_info    0x00003296        0x0 build/i686_debug/kernel/crtn.o
+ .debug_info    0x00003296      0x33a /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
+ .debug_info    0x000035d0      0x351 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
 
-.debug_abbrev   0x00000000     0x17cb
+.debug_abbrev   0x00000000     0x1843
  .debug_abbrev  0x00000000        0x0 build/i686_debug/kernel/crti.o
- .debug_abbrev  0x00000000      0x165 build/i686_debug/kernel/_start.o
- .debug_abbrev  0x00000165       0xf4 build/i686_debug/kernel/debug.o
- .debug_abbrev  0x00000259       0xe2 build/i686_debug/kernel/memory.o
- .debug_abbrev  0x0000033b      0x18a build/i686_debug/kernel/stdio.o
- .debug_abbrev  0x000004c5       0xc5 build/i686_debug/kernel/string.o
- .debug_abbrev  0x0000058a       0xbf build/i686_debug/kernel/hal/hal.o
- .debug_abbrev  0x00000649       0xb6 build/i686_debug/kernel/hal/vfs.o
- .debug_abbrev  0x000006ff       0x90 build/i686_debug/kernel/arch/i686/e9.o
- .debug_abbrev  0x0000078f      0x14c build/i686_debug/kernel/arch/i686/gdt.o
- .debug_abbrev  0x000008db      0x1c6 build/i686_debug/kernel/arch/i686/idt.o
- .debug_abbrev  0x00000aa1      0x184 build/i686_debug/kernel/arch/i686/irq.o
- .debug_abbrev  0x00000c25      0x152 build/i686_debug/kernel/arch/i686/pic.o
- .debug_abbrev  0x00000d77      0x122 build/i686_debug/kernel/arch/i686/vga_text.o
- .debug_abbrev  0x00000e99      0x1aa build/i686_debug/kernel/arch/driver/ata.o
- .debug_abbrev  0x00001043      0x1b1 build/i686_debug/kernel/arch/driver/fdc.o
- .debug_abbrev  0x000011f4      0x196 build/i686_debug/kernel/arch/driver/key.o
- .debug_abbrev  0x0000138a      0x15a build/i686_debug/kernel/arch/driver/pmm.o
- .debug_abbrev  0x000014e4       0x1b build/i686_debug/kernel/arch/i686/isr.o
- .debug_abbrev  0x000014ff        0x0 build/i686_debug/kernel/crtn.o
- .debug_abbrev  0x000014ff      0x15b /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
- .debug_abbrev  0x0000165a      0x171 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
+ .debug_abbrev  0x00000000      0x194 build/i686_debug/kernel/_start.o
+ .debug_abbrev  0x00000194       0xf4 build/i686_debug/kernel/debug.o
+ .debug_abbrev  0x00000288       0xe2 build/i686_debug/kernel/memory.o
+ .debug_abbrev  0x0000036a      0x18a build/i686_debug/kernel/stdio.o
+ .debug_abbrev  0x000004f4       0xc5 build/i686_debug/kernel/string.o
+ .debug_abbrev  0x000005b9       0xc0 build/i686_debug/kernel/hal/hal.o
+ .debug_abbrev  0x00000679       0xb6 build/i686_debug/kernel/hal/vfs.o
+ .debug_abbrev  0x0000072f       0x90 build/i686_debug/kernel/arch/i686/e9.o
+ .debug_abbrev  0x000007bf      0x14c build/i686_debug/kernel/arch/i686/gdt.o
+ .debug_abbrev  0x0000090b      0x1c6 build/i686_debug/kernel/arch/i686/idt.o
+ .debug_abbrev  0x00000ad1      0x184 build/i686_debug/kernel/arch/i686/irq.o
+ .debug_abbrev  0x00000c55      0x152 build/i686_debug/kernel/arch/i686/pic.o
+ .debug_abbrev  0x00000da7      0x122 build/i686_debug/kernel/arch/i686/vga_text.o
+ .debug_abbrev  0x00000ec9      0x1aa build/i686_debug/kernel/arch/driver/ata.o
+ .debug_abbrev  0x00001073      0x1b1 build/i686_debug/kernel/arch/driver/fdc.o
+ .debug_abbrev  0x00001224      0x196 build/i686_debug/kernel/arch/driver/key.o
+ .debug_abbrev  0x000013ba      0x1a2 build/i686_debug/kernel/arch/driver/pmm.o
+ .debug_abbrev  0x0000155c       0x1b build/i686_debug/kernel/arch/i686/isr.o
+ .debug_abbrev  0x00001577        0x0 build/i686_debug/kernel/crtn.o
+ .debug_abbrev  0x00001577      0x15b /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
+ .debug_abbrev  0x000016d2      0x171 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
 
-.debug_line     0x00000000     0x1b8e
+.debug_line     0x00000000     0x1c40
  .debug_line    0x00000000        0x0 build/i686_debug/kernel/crti.o
- .debug_line    0x00000000       0xbd build/i686_debug/kernel/_start.o
- .debug_line    0x000000bd       0x7a build/i686_debug/kernel/debug.o
- .debug_line    0x00000137       0xd0 build/i686_debug/kernel/memory.o
- .debug_line    0x00000207      0x2ab build/i686_debug/kernel/stdio.o
- .debug_line    0x000004b2       0xd8 build/i686_debug/kernel/string.o
- .debug_line    0x0000058a       0xad build/i686_debug/kernel/hal/hal.o
- .debug_line    0x00000637       0xb0 build/i686_debug/kernel/hal/vfs.o
- .debug_line    0x000006e7       0x6a build/i686_debug/kernel/arch/i686/e9.o
- .debug_line    0x00000751       0xc9 build/i686_debug/kernel/arch/i686/gdt.o
- .debug_line    0x0000081a      0x110 build/i686_debug/kernel/arch/i686/idt.o
- .debug_line    0x0000092a       0xdc build/i686_debug/kernel/arch/i686/irq.o
- .debug_line    0x00000a06      0x116 build/i686_debug/kernel/arch/i686/pic.o
- .debug_line    0x00000b1c      0x275 build/i686_debug/kernel/arch/i686/vga_text.o
- .debug_line    0x00000d91      0x19e build/i686_debug/kernel/arch/driver/ata.o
- .debug_line    0x00000f2f      0x1b3 build/i686_debug/kernel/arch/driver/fdc.o
- .debug_line    0x000010e2      0x165 build/i686_debug/kernel/arch/driver/key.o
- .debug_line    0x00001247      0x284 build/i686_debug/kernel/arch/driver/pmm.o
- .debug_line    0x000014cb      0x36b build/i686_debug/kernel/arch/i686/isr.o
- .debug_line    0x00001836        0x0 build/i686_debug/kernel/crtn.o
- .debug_line    0x00001836      0x180 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
- .debug_line    0x000019b6      0x1d8 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
+ .debug_line    0x00000000      0x106 build/i686_debug/kernel/_start.o
+ .debug_line    0x00000106       0x7a build/i686_debug/kernel/debug.o
+ .debug_line    0x00000180       0xd0 build/i686_debug/kernel/memory.o
+ .debug_line    0x00000250      0x2ab build/i686_debug/kernel/stdio.o
+ .debug_line    0x000004fb       0xd8 build/i686_debug/kernel/string.o
+ .debug_line    0x000005d3       0xac build/i686_debug/kernel/hal/hal.o
+ .debug_line    0x0000067f       0xb0 build/i686_debug/kernel/hal/vfs.o
+ .debug_line    0x0000072f       0x6a build/i686_debug/kernel/arch/i686/e9.o
+ .debug_line    0x00000799       0xc9 build/i686_debug/kernel/arch/i686/gdt.o
+ .debug_line    0x00000862      0x110 build/i686_debug/kernel/arch/i686/idt.o
+ .debug_line    0x00000972       0xdc build/i686_debug/kernel/arch/i686/irq.o
+ .debug_line    0x00000a4e      0x116 build/i686_debug/kernel/arch/i686/pic.o
+ .debug_line    0x00000b64      0x275 build/i686_debug/kernel/arch/i686/vga_text.o
+ .debug_line    0x00000dd9      0x19e build/i686_debug/kernel/arch/driver/ata.o
+ .debug_line    0x00000f77      0x1b3 build/i686_debug/kernel/arch/driver/fdc.o
+ .debug_line    0x0000112a      0x165 build/i686_debug/kernel/arch/driver/key.o
+ .debug_line    0x0000128f      0x2ee build/i686_debug/kernel/arch/driver/pmm.o
+ .debug_line    0x0000157d      0x36b build/i686_debug/kernel/arch/i686/isr.o
+ .debug_line    0x000018e8        0x0 build/i686_debug/kernel/crtn.o
+ .debug_line    0x000018e8      0x180 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
+ .debug_line    0x00001a68      0x1d8 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
 
-.debug_frame    0x00000000      0xd60
+.debug_frame    0x00000000      0xdb0
  .debug_frame   0x00000000        0x0 build/i686_debug/kernel/crti.o
  .debug_frame   0x00000000       0x6c build/i686_debug/kernel/_start.o
  .debug_frame   0x0000006c       0x34 build/i686_debug/kernel/debug.o
@@ -708,10 +713,9 @@ OUTPUT(build/i686_debug/kernel/kernel.elf elf32-i386)
  .debug_frame   0x00000954      0x158 build/i686_debug/kernel/arch/driver/ata.o
  .debug_frame   0x00000aac      0x138 build/i686_debug/kernel/arch/driver/fdc.o
  .debug_frame   0x00000be4       0xd4 build/i686_debug/kernel/arch/driver/key.o
- .debug_frame   0x00000cb8       0xa4 build/i686_debug/kernel/arch/driver/pmm.o
- *fill*         0x00000d5c        0x4 
- .debug_frame   0x00000d60        0x0 build/i686_debug/kernel/arch/i686/isr.o
- .debug_frame   0x00000d60        0x0 build/i686_debug/kernel/crtn.o
+ .debug_frame   0x00000cb8       0xf8 build/i686_debug/kernel/arch/driver/pmm.o
+ .debug_frame   0x00000db0        0x0 build/i686_debug/kernel/arch/i686/isr.o
+ .debug_frame   0x00000db0        0x0 build/i686_debug/kernel/crtn.o
 
 .debug_loc      0x00000000        0x0
  .debug_loc     0x00000000        0x0 build/i686_debug/kernel/crti.o
@@ -742,33 +746,33 @@ OUTPUT(build/i686_debug/kernel/kernel.elf elf32-i386)
  .comment       0x00000012       0x13 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
  .comment       0x00000012       0x13 /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
 
-.debug_str      0x00000000      0xea3
- .debug_str     0x00000000      0xea3 build/i686_debug/kernel/_start.o
-                                0x240 (size before relaxing)
- .debug_str     0x00000ea3      0x1af build/i686_debug/kernel/debug.o
- .debug_str     0x00000ea3      0x129 build/i686_debug/kernel/memory.o
- .debug_str     0x00000ea3      0x235 build/i686_debug/kernel/stdio.o
- .debug_str     0x00000ea3      0x121 build/i686_debug/kernel/string.o
- .debug_str     0x00000ea3      0x1ee build/i686_debug/kernel/hal/hal.o
- .debug_str     0x00000ea3      0x12c build/i686_debug/kernel/hal/vfs.o
- .debug_str     0x00000ea3      0x106 build/i686_debug/kernel/arch/i686/e9.o
- .debug_str     0x00000ea3      0x37f build/i686_debug/kernel/arch/i686/gdt.o
- .debug_str     0x00000ea3      0x34e build/i686_debug/kernel/arch/i686/idt.o
- .debug_str     0x00000ea3      0x254 build/i686_debug/kernel/arch/i686/irq.o
- .debug_str     0x00000ea3      0x2dd build/i686_debug/kernel/arch/i686/pic.o
- .debug_str     0x00000ea3      0x1bc build/i686_debug/kernel/arch/i686/vga_text.o
- .debug_str     0x00000ea3      0x201 build/i686_debug/kernel/arch/driver/ata.o
- .debug_str     0x00000ea3      0x260 build/i686_debug/kernel/arch/driver/fdc.o
- .debug_str     0x00000ea3      0x1fe build/i686_debug/kernel/arch/driver/key.o
- .debug_str     0x00000ea3      0x249 build/i686_debug/kernel/arch/driver/pmm.o
- .debug_str     0x00000ea3      0x1fd /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
- .debug_str     0x00000ea3      0x1fd /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
+.debug_str      0x00000000      0xecd
+ .debug_str     0x00000000      0xecd build/i686_debug/kernel/_start.o
+                                0x265 (size before relaxing)
+ .debug_str     0x00000ecd      0x1af build/i686_debug/kernel/debug.o
+ .debug_str     0x00000ecd      0x129 build/i686_debug/kernel/memory.o
+ .debug_str     0x00000ecd      0x235 build/i686_debug/kernel/stdio.o
+ .debug_str     0x00000ecd      0x121 build/i686_debug/kernel/string.o
+ .debug_str     0x00000ecd      0x1ee build/i686_debug/kernel/hal/hal.o
+ .debug_str     0x00000ecd      0x12c build/i686_debug/kernel/hal/vfs.o
+ .debug_str     0x00000ecd      0x106 build/i686_debug/kernel/arch/i686/e9.o
+ .debug_str     0x00000ecd      0x37f build/i686_debug/kernel/arch/i686/gdt.o
+ .debug_str     0x00000ecd      0x34e build/i686_debug/kernel/arch/i686/idt.o
+ .debug_str     0x00000ecd      0x254 build/i686_debug/kernel/arch/i686/irq.o
+ .debug_str     0x00000ecd      0x2dd build/i686_debug/kernel/arch/i686/pic.o
+ .debug_str     0x00000ecd      0x1bc build/i686_debug/kernel/arch/i686/vga_text.o
+ .debug_str     0x00000ecd      0x201 build/i686_debug/kernel/arch/driver/ata.o
+ .debug_str     0x00000ecd      0x260 build/i686_debug/kernel/arch/driver/fdc.o
+ .debug_str     0x00000ecd      0x1fe build/i686_debug/kernel/arch/driver/key.o
+ .debug_str     0x00000ecd      0x27d build/i686_debug/kernel/arch/driver/pmm.o
+ .debug_str     0x00000ecd      0x1fd /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
+ .debug_str     0x00000ecd      0x1fd /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_umoddi3.o)
 
 .debug_line_str
                 0x00000000      0x377
  .debug_line_str
                 0x00000000      0x377 build/i686_debug/kernel/_start.o
-                                0x14d (size before relaxing)
+                                0x153 (size before relaxing)
  .debug_line_str
                 0x00000377       0xe0 build/i686_debug/kernel/debug.o
  .debug_line_str
@@ -800,7 +804,7 @@ OUTPUT(build/i686_debug/kernel/kernel.elf elf32-i386)
  .debug_line_str
                 0x00000377       0xf7 build/i686_debug/kernel/arch/driver/key.o
  .debug_line_str
-                0x00000377       0xfb build/i686_debug/kernel/arch/driver/pmm.o
+                0x00000377      0x117 build/i686_debug/kernel/arch/driver/pmm.o
  .debug_line_str
                 0x00000377       0xda /home/notbonzo/toolchain32/i686-elf/lib/gcc/i686-elf/14.1.0/libgcc.a(_udivdi3.o)
  .debug_line_str

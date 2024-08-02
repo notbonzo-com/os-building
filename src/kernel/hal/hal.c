@@ -16,6 +16,6 @@ void HAL_Initialize(bootparams_t bootparams)
         init_fdc();
     else
         ata_init();
-    pmm_init(bootparams.memInfo);
+    pmm_init(&bootparams.memInfo);
     init_keyboard();
 }

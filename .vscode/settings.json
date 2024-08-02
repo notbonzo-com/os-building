@@ -19,6 +19,8 @@
 		"string.h": "c",
 		"pmm.h": "c",
 		"idt.h": "c",
-		"irq.h": "c"
+		"irq.h": "c",
+		"gdt.h": "c",
+		"functional": "cpp"
 	}
 }

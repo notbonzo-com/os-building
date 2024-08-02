@@ -1,102 +1,85 @@
 #include "pmm.h"
+#include <stdbool.h>
+#include <debug.h>
+#include <memory.h>
 
-static uint32_t* bitmap;
-static size_t total_pages;
-static size_t usable_pages;
-static size_t bitmap_size;
+page_manager_t page_manager = {0};
 
-static size_t get_page_count(uintptr_t length) {
-    return (length + PAGE_SIZE - 1) / PAGE_SIZE;
-}
-
-void pmm_init(meminfo_t memInfo) {
-    total_pages = 0;
-    usable_pages = 0;
-    size_t usable_page_count = 0;
-    for (uint32_t i = 0; i < memInfo.region_count; i++) {
-        memregion_t region = memInfo.regions[i];
-        if (region.type == USABLE) {
-            usable_pages += get_page_count(region.length);
+void pmm_init(meminfo_t* memInfo) {
+    uint64_t total_memory = 0;
+    for (uint32_t i = 0; i < memInfo->region_count; i++) {
+        if (memInfo->regions[i].type == USABLE) {
+            total_memory += memInfo->regions[i].length;
         }
-        total_pages += get_page_count(region.length);
     }
+    page_manager.total_pages = total_memory / PAGE_SIZE;
 
-    UsablePage UsablePages[usable_pages];
+    page_manager.bitmap_size = (page_manager.total_pages + 63) / 64;
+    size_t bitmap_pages = (page_manager.bitmap_size * sizeof(uint64_t) + PAGE_SIZE - 1) / PAGE_SIZE;
 
-    size_t page_index = 0;
-    for (uint32_t i = 0; i < memInfo.region_count; i++) {
-        memregion_t region = memInfo.regions[i];
-        size_t pages = get_page_count(region.length);
-        if (region.type == USABLE) {
-            for (size_t j = 0; j < pages; j++) {
-                UsablePages[usable_page_count++].base = region.begin + j * PAGE_SIZE;
+    uint64_t bitmap_start_page = 0;
+    bool found_space = false;
+    for (uint32_t i = 0; i < memInfo->region_count && !found_space; i++) {
+        if (memInfo->regions[i].type == USABLE) {
+            uint64_t region_start_page = memInfo->regions[i].begin / PAGE_SIZE;
+            uint64_t region_end_page = (memInfo->regions[i].begin + memInfo->regions[i].length) / PAGE_SIZE;
+            if (region_end_page - region_start_page >= bitmap_pages) {
+                bitmap_start_page = region_start_page;
+                found_space = true;
             }
         }
-        page_index += pages;
+    }
+    if (!found_space) {
+        debugf("Not enough space for bitmap\n");
+        return;
+    }
+    debugf("Bitmap starts at page %llu\n", bitmap_start_page);
+    debugf("Bitmap ends at page %llu\n", bitmap_start_page + bitmap_pages - 1);
+
+    page_manager.page_bitmap = (uint64_t*)(bitmap_start_page * PAGE_SIZE);
+    memset(page_manager.page_bitmap, 0xFF, bitmap_pages * PAGE_SIZE);
+    for (uint64_t i = 0; i < bitmap_pages; i++) {
+        page_manager.page_bitmap[(bitmap_start_page + i) / 64] |= (1ULL << ((bitmap_start_page + i) % 64));
     }
 
-    bitmap_size = (usable_pages + 31) / 32;
-
-    // Find space for the bitmap within usable pages
-    for (size_t i = 0; i < usable_page_count; i++) {
-        size_t free_pages = 0;
-        for (size_t j = i; j < usable_page_count; j++) {
-            if (UsablePages[j].base == UsablePages[i].base + (j - i) * PAGE_SIZE) {
-                free_pages++;
-                if (free_pages * PAGE_SIZE >= bitmap_size * sizeof(uint32_t)) {
-                    bitmap = (uint32_t*)UsablePages[i].base;
-                    for (size_t k = 0; k < bitmap_size; k++) {
-                        bitmap[k] = 0xFFFFFFFF;
-                    }
-                    i = usable_page_count;
-                    break;
-                }
-            } else {
-                break;
+    for (uint32_t i = 0; i < memInfo->region_count; i++) {
+        if (memInfo->regions[i].type == USABLE) {
+            uint64_t region_start_page = memInfo->regions[i].begin / PAGE_SIZE;
+            uint64_t region_end_page = (memInfo->regions[i].begin + memInfo->regions[i].length) / PAGE_SIZE;
+            for (uint64_t j = region_start_page; j < region_end_page; j++) {
+                page_manager.page_bitmap[j / 64] &= ~(1ULL << (j % 64));
             }
         }
     }
 
-    page_index = 0;
-    for (uint32_t i = 0; i < memInfo.region_count; i++) {
-        memregion_t region = memInfo.regions[i];
-        size_t pages = get_page_count(region.length);
-        if (region.type != USABLE) {
-            for (size_t j = 0; j < pages; j++) {
-                SET_BIT(bitmap, page_index + j);
-            }
-        }
-        page_index += pages;
+    for (uint64_t i = 0; i < bitmap_pages; i++) {
+        page_manager.page_bitmap[(bitmap_start_page + i) / 64] |= (1ULL << ((bitmap_start_page + i) % 64));
     }
 }
 
-void* pmm_claim(size_t num_pages) {
-    size_t consecutive_pages = 0;
-    size_t start_page = 0;
+bool is_page_free(uint64_t page_index) {
+    return !(page_manager.page_bitmap[page_index / 64] & (1ULL << (page_index % 64)));
+}
 
-    for (size_t i = 0; i < usable_pages; i++) {
-        if (!IS_BIT_SET(bitmap, i)) {
-            if (consecutive_pages == 0) {
-                start_page = i;
-            }
-            consecutive_pages++;
-            if (consecutive_pages == num_pages) {
-                for (size_t j = 0; j < num_pages; j++) {
-                    SET_BIT(bitmap, start_page + j);
-                }
-                return (void*)(start_page * PAGE_SIZE);
-            }
-        } else {
-            consecutive_pages = 0;
+void mark_page_as_used(uint64_t page_index) {
+    page_manager.page_bitmap[page_index / 64] |= (1ULL << (page_index % 64));
+}
+
+void mark_page_as_free(uint64_t page_index) {
+    page_manager.page_bitmap[page_index / 64] &= ~(1ULL << (page_index % 64));
+}
+
+void* alloc_page() {
+    for (uint64_t i = 0; i < page_manager.total_pages; i++) {
+        if (is_page_free(i)) {
+            mark_page_as_used(i);
+            return (void*)(i * PAGE_SIZE);
         }
     }
-
     return NULL;
 }
 
-void pmm_free(void* addr, size_t num_pages) {
-    size_t start_page = ((uintptr_t)addr) / PAGE_SIZE;
-    for (size_t i = 0; i < num_pages; i++) {
-        UNSET_BIT(bitmap, start_page + i);
-    }
+void free_page(void* page) {
+    uint64_t page_index = (uint64_t)page / PAGE_SIZE;
+    mark_page_as_free(page_index);
 }
