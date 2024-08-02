@@ -15,6 +15,8 @@
 #include <arch/driver/fs/mbr.h>
 #include <arch/driver/fs/fat.h>
 
+#include <shell/shell.h>
+
 extern uint8_t __bss_start;
 extern uint8_t __bss_end;
 
@@ -27,13 +29,8 @@ void _start(bootparams_t params)
     log_debug("kernel", "Bootdrive: %d\n", params.bootDrive);
     i686_EnableInterrupts();
 
-    for (;;)
-    {
-        char c = getchar();
-        if (c == -1)
-            continue;
-        printf("%c", c);
-    }
+    init_shell();
 
+    printf("Terminating Kernel\n");
     i686_Panic();
 }

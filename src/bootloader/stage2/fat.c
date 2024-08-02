@@ -215,7 +215,7 @@ FAT_File* FAT_OpenEntry(Partition* disk, FAT_DirectoryEntry* entry)
     if (handle < 0)
     {
         printf("FAT: out of file handles\r\n");
-        return nullptr;
+        return NULL;
     }
 
     FAT_FileData* fd = &g_Data->OpenedFiles[handle];
@@ -233,7 +233,7 @@ FAT_File* FAT_OpenEntry(Partition* disk, FAT_DirectoryEntry* entry)
         for (int i = 0; i < 11; i++)
             printf("%c", entry->Name[i]);
         printf("\n");
-        return nullptr;
+        return NULL;
     }
 
     fd->Opened = true;
@@ -370,7 +370,7 @@ void FAT_GetShortName(const char* name, char shortName[12])
     shortName[11] = '\0';
 
     const char* ext = strchr(name, '.');
-    if (ext == nullptr)
+    if (ext == NULL)
         ext = name + 11;
 
     for (int i = 0; i < 8 && name[i] && name + i < ext; i++)
@@ -414,7 +414,7 @@ FAT_File* FAT_Open(Partition* disk, const char* path)
     while (*path) {
         bool isLast = false;
         const char* delim = strchr(path, '/');
-        if (delim != nullptr)
+        if (delim != NULL)
         {
             memcpy(name, path, delim - path);
             name[delim - path] = '\0';
@@ -437,7 +437,7 @@ FAT_File* FAT_Open(Partition* disk, const char* path)
             if (!isLast && entry.Attributes & FAT_ATTRIBUTE_DIRECTORY == 0)
             {
                 printf("FAT: %s not a directory\r\n", name);
-                return nullptr;
+                return NULL;
             }
 
             current = FAT_OpenEntry(disk, &entry);
@@ -447,7 +447,7 @@ FAT_File* FAT_Open(Partition* disk, const char* path)
             FAT_Close(current);
 
             printf("FAT: %s not found\r\n", name);
-            return nullptr;
+            return NULL;
         }
     }
 

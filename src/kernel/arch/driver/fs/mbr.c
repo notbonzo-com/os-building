@@ -1,6 +1,7 @@
 #include <arch/driver/fs/mbr.h>
 #include <arch/driver/ata.h>
 #include <arch/driver/pmm.h>
+#include <stdbool.h>
 
 MBR_t g_MBRS[4];
 uint8_t g_BootMBR;
@@ -22,5 +23,14 @@ bool MBR_ReadSectors(MBR_t* disk, uint32_t lba, uint8_t sectors, uint8_t* lowerD
 		return false;
 	}
 	read_sectors_ATA_PIO(lowerDataOut, lba+disk->partitionOffset, sectors);
+	return true;
+}
+
+bool MBR_WriteSectors(MBR_t* disk, uint32_t lba, uint8_t sectors, uint8_t* lowerDataIn)
+{
+	if (lba+disk->partitionOffset >=disk->partitionSize) {
+		return false;
+	}
+	write_sectors_ATA_PIO(lba+disk->partitionOffset, sectors, lowerDataIn);
 	return true;
 }

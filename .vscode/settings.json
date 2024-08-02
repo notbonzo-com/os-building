@@ -23,6 +23,10 @@
 		"gdt.h": "c",
 		"functional": "cpp",
 		"vmm.h": "c",
-		"memdefs.h": "c"
+		"memdefs.h": "c",
+		"shell.h": "c",
+		"vga_text.h": "c",
+		"random": "c",
+		"fat.h": "c"
 	}
 }

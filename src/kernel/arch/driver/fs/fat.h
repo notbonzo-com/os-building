@@ -1,6 +1,10 @@
 #pragma once
 #include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
 #include "mbr.h"
+
+#define MAX_DIR_ENTRIES 256
 
 typedef struct 
 {
@@ -52,8 +56,9 @@ enum FAT_Attributes
 };
 
 bool FAT_Initialize();
-FAT_File * FAT_Open(const char* path);
+FAT_File* FAT_Open(const char* path);
 uint32_t FAT_Read(FAT_File* file, uint32_t byteCount, void* dataOut);
+const char* FAT_ListDir(FAT_File* file);
 uint32_t FAT_GetSize(FAT_File* file);
 bool FAT_ReadEntry(FAT_File* file, FAT_DirectoryEntry* dirEntry);
 void FAT_Close(FAT_File* file);

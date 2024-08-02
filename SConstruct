@@ -39,14 +39,14 @@ VARS.Add("toolchain",
 
 DEPS = {
     'binutils': '2.37',
-    'gcc': '14.1.0'
+    'gcc': '11.2.0'
 }
 
 HOST_ENVIRONMENT = Environment(variables=VARS,
     ENV = os.environ,
     AS = 'nasm',
-    CFLAGS = ['-std=c23'],
-    CXXFLAGS = ['-std=c++23'],
+    CFLAGS = ['-std=c17'],
+    CXXFLAGS = ['-std=c++17'],
     CCFLAGS = ['-g'],
     STRIP = 'strip',
 )

@@ -14,7 +14,7 @@
 #define MEMORY_ELF_SIZE     0x00010000
 
 #define MEMORY_LOAD_KERNEL  ((void*)0x40000)
-#define MEMORY_LOAD_SIZE    0x0010000 //TODO Double size (kernel is chunky)
+#define MEMORY_LOAD_SIZE    0x0020000 //TODO Double size (kernel is chunky)
 
 // 0x00020000 - 0x00030000 - stage2
 

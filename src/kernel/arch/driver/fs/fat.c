@@ -8,10 +8,6 @@
 #include <string.h>
 #include "mbr.h"
 
-#ifndef nullptr
-#define nullptr (void*)0
-#endif
-
 #define SECTOR_SIZE             512
 #define MAX_PATH_SIZE           256
 #define MAX_FILE_HANDLES        10
@@ -145,7 +141,7 @@ bool FAT_Initialize()
 
     if (!FAT_ReadBootSector())
     {
-        printf("FAT: read boot sector failed\r\n");
+        printf("FAT: read boot sector failed\n");
         return false;
     }
 
@@ -188,7 +184,7 @@ bool FAT_Initialize()
 
     if (!MBR_ReadSectors(&g_MBRS[g_BootMBR], rootDirLba, 1, g_Data->RootDirectory.Buffer))
     {
-        printf("FAT: read root directory failed\r\n");
+        printf("FAT: read root directory failed\n");
         return false;
     }
 
@@ -217,8 +213,8 @@ FAT_File* FAT_OpenEntry(FAT_DirectoryEntry* entry)
 
     if (handle < 0)
     {
-        printf("FAT: out of file handles\r\n");
-        return nullptr;
+        printf("FAT: out of file handles\n");
+        return NULL;
     }
 
     FAT_FileData* fd = &g_Data->OpenedFiles[handle];
@@ -236,7 +232,7 @@ FAT_File* FAT_OpenEntry(FAT_DirectoryEntry* entry)
         for (int i = 0; i < 11; i++)
             printf("%c", entry->Name[i]);
         printf("\n");
-        return nullptr;
+        return NULL;
     }
 
     fd->Opened = true;
@@ -319,7 +315,7 @@ uint32_t FAT_Read(FAT_File* file, uint32_t byteCount, void* dataOut)
 
                 if (!MBR_ReadSectors(&g_MBRS[g_BootMBR], fd->CurrentCluster, 1, fd->Buffer))
                 {
-                    printf("FAT: read error!\r\n");
+                    printf("FAT: read error!\n");
                     break;
                 }
             }
@@ -339,7 +335,7 @@ uint32_t FAT_Read(FAT_File* file, uint32_t byteCount, void* dataOut)
 
                 if (!MBR_ReadSectors(&g_MBRS[g_BootMBR], FAT_ClusterToLba(fd->CurrentCluster) + fd->CurrentSectorInCluster, 1, fd->Buffer))
                 {
-                    printf("FAT: read error!\r\n");
+                    printf("FAT: read error!\n");
                     break;
                 }
             }
@@ -373,7 +369,7 @@ void FAT_GetShortName(const char* name, char shortName[12])
     shortName[11] = '\0';
 
     const char* ext = strchr(name, '.');
-    if (ext == nullptr)
+    if (ext == NULL)
         ext = name + 11;
 
     for (int i = 0; i < 8 && name[i] && name + i < ext; i++)
@@ -393,6 +389,8 @@ bool FAT_FindFile(FAT_File* file, const char* name, FAT_DirectoryEntry* entryOut
 
     FAT_GetShortName(name, shortName);
 
+    uint32_t failSafe = 0;
+
     while (FAT_ReadEntry(file, &entry))
     {
         if (memcmp(shortName, entry.Name, 11) == 0)
@@ -400,6 +398,9 @@ bool FAT_FindFile(FAT_File* file, const char* name, FAT_DirectoryEntry* entryOut
             *entryOut = entry;
             return true;
         }
+
+        if (++failSafe > 10000)
+            break;
     }
     
     return false;
@@ -417,17 +418,14 @@ FAT_File* FAT_Open(const char* path)
     while (*path) {
         bool isLast = false;
         const char* delim = strchr(path, '/');
-        if (delim != nullptr)
-        {
+        if (delim != NULL) {
             memcpy(name, path, delim - path);
             name[delim - path] = '\0';
             path = delim + 1;
-        }
-        else
-        {
+        } else {
             unsigned len = strlen(path);
             memcpy(name, path, len);
-            name[len + 1] = '\0';
+            name[len] = '\0';
             path += len;
             isLast = true;
         }
@@ -437,20 +435,27 @@ FAT_File* FAT_Open(const char* path)
         {
             FAT_Close(current);
 
-            if (!isLast && entry.Attributes & FAT_ATTRIBUTE_DIRECTORY == 0)
+            if (!isLast && (entry.Attributes & FAT_ATTRIBUTE_DIRECTORY) == 0)
             {
-                printf("FAT: %s not a directory\r\n", name);
-                return nullptr;
+                FAT_Close(current);
+                printf("FAT: %s not a directory\n", name);
+                return NULL;
             }
 
             current = FAT_OpenEntry(&entry);
+            if (current == NULL)
+            {
+                FAT_Close(current);
+                printf("FAT: failed to open entry\n");
+                return NULL;
+            }
         }
         else
         {
             FAT_Close(current);
 
-            printf("FAT: %s not found\r\n", name);
-            return nullptr;
+            printf("FAT: %s not found\n", name);
+            return NULL;
         }
     }
 
@@ -460,4 +465,61 @@ FAT_File* FAT_Open(const char* path)
 uint32_t FAT_GetSize(FAT_File* file)
 {
     return file->Size;
+}
+
+const char* FAT_ListDir(FAT_File* file)
+{
+    FAT_DirectoryEntry entry;
+    static char fileList[MAX_DIR_ENTRIES * 14];  // 14 to account for max file name length (8.3) + dot + newline
+    char* currentPos = fileList;
+    
+    if (!file->IsDirectory)
+    {
+        printf("FAT: Provided file handle is not a directory\n");
+        return NULL;
+    }
+
+    file->Position = 0;
+
+    while (FAT_ReadEntry(file, &entry))
+    {
+        if (entry.Name[0] == 0x00) // End of directory
+            break;
+        if (entry.Name[0] == 0xE5) // Deleted entry
+            continue;
+        if (entry.Attributes & FAT_ATTRIBUTE_VOLUME_ID) // Volume ID
+            continue;
+
+        int nameLength = 8;
+        while (nameLength > 0 && entry.Name[nameLength - 1] == ' ')
+        {
+            nameLength--;
+        }
+
+        for (int i = 0; i < nameLength; i++)
+        {
+            *currentPos++ = entry.Name[i];
+        }
+
+        int extLength = 3;
+        while (extLength > 0 && entry.Name[8 + extLength - 1] == ' ')
+        {
+            extLength--;
+        }
+
+        if (extLength > 0)
+        {
+            *currentPos++ = '.';
+            for (int i = 0; i < extLength; i++)
+            {
+                *currentPos++ = entry.Name[8 + i];
+            }
+        }
+
+        *currentPos++ = '\n';
+    }
+
+    *currentPos = '\0'; // Null-terminate the string
+
+    return fileList;
 }

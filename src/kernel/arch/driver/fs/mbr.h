@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <stdbool.h>
 
 #define MBR_SIGNATURE 0xAA55
 
@@ -32,3 +33,4 @@ extern uint8_t g_BootMBR;
 
 void MBR_Initialize();
 bool MBR_ReadSectors(MBR_t* disk, uint32_t lba, uint8_t sectors, uint8_t* lowerDataOut);
+bool MBR_WriteSectors(MBR_t* disk, uint32_t lba, uint8_t sectors, uint8_t* lowerDataIn);
