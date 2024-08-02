@@ -12,6 +12,8 @@ typedef struct {
     uint64_t total_pages;
 } page_manager_t;
 
+extern meminfo_t g_MemInfo;
+
 void pmm_init(meminfo_t* memInfo);
-void* alloc_page();
-void free_page(void* page);
+void* alloc_pages(uint64_t num_pages);
+void free_pages(void* pages, uint64_t num_pages);

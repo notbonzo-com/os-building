@@ -21,6 +21,7 @@
 		"idt.h": "c",
 		"irq.h": "c",
 		"gdt.h": "c",
-		"functional": "cpp"
+		"functional": "cpp",
+		"vmm.h": "c"
 	}
 }

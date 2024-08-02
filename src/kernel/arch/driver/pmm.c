@@ -4,8 +4,10 @@
 #include <memory.h>
 
 page_manager_t page_manager = {0};
+meminfo_t g_MemInfo = {0};
 
 void pmm_init(meminfo_t* memInfo) {
+    g_MemInfo = *memInfo;
     uint64_t total_memory = 0;
     for (uint32_t i = 0; i < memInfo->region_count; i++) {
         if (memInfo->regions[i].type == USABLE) {
@@ -79,7 +81,32 @@ void* alloc_page() {
     return NULL;
 }
 
-void free_page(void* page) {
-    uint64_t page_index = (uint64_t)page / PAGE_SIZE;
-    mark_page_as_free(page_index);
+void* alloc_pages(uint64_t num_pages) {
+    uint64_t contiguous_pages = 0;
+    uint64_t start_page = 0;
+
+    for (uint64_t i = 0; i < page_manager.total_pages; i++) {
+        if (is_page_free(i)) {
+            if (contiguous_pages == 0) {
+                start_page = i;
+            }
+            contiguous_pages++;
+            if (contiguous_pages == num_pages) {
+                for (uint64_t j = start_page; j < start_page + num_pages; j++) {
+                    mark_page_as_used(j);
+                }
+                return (void*)(start_page * PAGE_SIZE);
+            }
+        } else {
+            contiguous_pages = 0;
+        }
+    }
+    return NULL;
+}
+
+void free_pages(void* pages, uint64_t num_pages) {
+    uint64_t start_page = (uint64_t)pages / PAGE_SIZE;
+    for (uint64_t i = start_page; i < start_page + num_pages; i++) {
+        mark_page_as_free(i);
+    }
 }
