@@ -12,6 +12,9 @@
 #include <arch/driver/ata.h>
 #include <arch/driver/pmm.h>
 
+#include <arch/driver/fs/mbr.h>
+#include <arch/driver/fs/fat.h>
+
 extern uint8_t __bss_start;
 extern uint8_t __bss_end;
 

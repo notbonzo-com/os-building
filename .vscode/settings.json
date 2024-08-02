@@ -22,6 +22,7 @@
 		"irq.h": "c",
 		"gdt.h": "c",
 		"functional": "cpp",
-		"vmm.h": "c"
+		"vmm.h": "c",
+		"memdefs.h": "c"
 	}
 }
