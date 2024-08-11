@@ -15,13 +15,6 @@ SECTIONS
 
     __kernel = .;
 
-    .entry :
-    {
-        __entry_start = .;
-        *(.entry)
-        __entry_end = .;
-    } :text
-
     .text :
     {
         __text_start = .;

@@ -8,6 +8,7 @@
 #include <arch/driver/pmm.h>
 #include <arch/driver/fs/mbr.h>
 #include <arch/driver/fs/fat.h>
+#include <arch/driver/vmm.h>
 
 #include <debug.h>
 #include <arch/i686/io.h>
@@ -17,11 +18,12 @@ void HAL_Initialize(bootparams_t bootparams)
     i686_GDT_Initialize();
     i686_IDT_Initialize();
     i686_IRQ_Initialize();
+    pmm_init(&bootparams.memInfo);
+    VMM_Initialize(kernel_page_directory);
     if (bootparams.bootDrive == 0 || bootparams.bootDrive == 1)
         init_fdc();
     else
         ata_init();
-    pmm_init(&bootparams.memInfo);
     MBR_Initialize();
     if (!FAT_Initialize()) {
         debugf("Failed to initialize FAT\n");
