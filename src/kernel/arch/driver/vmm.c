@@ -2,110 +2,109 @@
 #include <arch/driver/vmm.h>
 #include <memory.h>
 
+#define RECURSIVE_MAPPING_INDEX 1023
+
 PageDirectory* kernel_page_directory;
 
-// Linker symbols for mapping
-extern char __text_start[], __text_end[], __rodata_start[], __rodata_end[], __data_start[], __data_end[], __bss_start[], __bss_end[]; 
-
-static void enable_paging(PageDirectory* pd) {
-
-	__asm__ volatile (
-		"mov %0, %%cr3\n"
-		"mov %%cr0, %%eax\n"
-		"or $0x80000000, %%eax\n"
-		"mov %%eax, %%cr0\n"
-		: : "r" (pd)
-		: "rax"
-	);
-
+static inline uint32_t get_page_index(uint32_t addr) {
+    return addr / PAGE_SIZE;
 }
 
-void VMM_Initialize(PageDirectory* pageDirectory)
-{
-	pageDirectory = alloc_pages(1);
-	memset(pageDirectory, 0, PAGE_SIZE);
+static inline bool is_page_present(page_table_entry* entry) {
+    return entry->present == 1;
+}
 
-	// Map the recursive mapping for kernel being to access the paging structures after paging enabled
-	pageDirectory->tables[RECURSIVE_MAPPING_INDEX] = (PageTable*)((ROUND_UP_TO_PAGE((uint32_t)pageDirectory)) | PAGE_PRESENT | PAGE_RW);
+static inline void set_page_entry(page_table_entry* entry, uint32_t addr, uint32_t flags) {
+    entry->present = (flags & PAGE_PRESENT) ? 1 : 0;
+    entry->readwrite = (flags & PAGE_RW) ? 1 : 0;
+    entry->user = (flags & PAGE_USER) ? 1 : 0;
+    entry->address = addr >> 12;
+}
 
-	uint32_t text_start = ROUND_DOWN_TO_PAGE((uint32_t)__text_start);
-    uint32_t text_end = ROUND_UP_TO_PAGE((uint32_t)__text_end);
-	for (uint32_t addr = text_start; addr < text_end; addr += PAGE_SIZE)
-    {
-        VMM_MapPage(pageDirectory, addr, addr, PAGE_PRESENT | PAGE_RW); // Read-Execute permissions
-    }
+void VMM_Initialize(PageDirectory* pageDirectory) {
+    // Identity map the first 4 MiB of memory
+    pageDirectory = alloc_pages(1);
+    debugf("Page Directory Adress 0x%p\n", pageDirectory);
+    memset(pageDirectory, 0, PAGE_SIZE);
+    VMM_MapPage(pageDirectory, 0x00000000, PAGE_SIZE * 1024, 0x00000000, PAGE_PRESENT | PAGE_RW);
 
-	uint32_t rodata_start = ROUND_DOWN_TO_PAGE((uint32_t)__rodata_start);
-    uint32_t rodata_end = ROUND_UP_TO_PAGE((uint32_t)__rodata_end);
-    for (uint32_t addr = rodata_start; addr < rodata_end; addr += PAGE_SIZE)
-    {
-        VMM_MapPage(pageDirectory, addr, addr, PAGE_PRESENT); // Read-Only permissions
-    }
+    debugf(
+        "Kernel Adresses: text 0x%p - 0x%p, rodata 0x%p - 0x%p, data 0x%p - 0x%p, bss 0x%p - 0x%p\n",
+        __text_start, __text_end, __rodata_start, __rodata_end, __data_start, __data_end, __bss_start, __bss_end
+    );
 
-    uint32_t data_start = ROUND_DOWN_TO_PAGE((uint32_t)__data_start);
-    uint32_t data_end = ROUND_UP_TO_PAGE((uint32_t)__data_end);
-    for (uint32_t addr = data_start; addr < data_end; addr += PAGE_SIZE)
-    {
-        VMM_MapPage(pageDirectory, addr, addr, PAGE_PRESENT | PAGE_RW); // Read-Write permissions
-    }
+    VMM_MapPage(pageDirectory, (uint32_t)__text_start, __text_end - __text_start, (uint32_t)__text_start, PAGE_PRESENT);
+    VMM_MapPage(pageDirectory, (uint32_t)__rodata_start, __rodata_end - __rodata_start, (uint32_t)__rodata_start, PAGE_PRESENT);
+    VMM_MapPage(pageDirectory, (uint32_t)__data_start, __data_end - __data_start, (uint32_t)__data_start, PAGE_PRESENT | PAGE_RW);
+    VMM_MapPage(pageDirectory, (uint32_t)__bss_start, __bss_end - __bss_start, (uint32_t)__bss_start, PAGE_PRESENT | PAGE_RW);
 
-    uint32_t bss_start = ROUND_DOWN_TO_PAGE((uint32_t)__bss_start);
-    uint32_t bss_end = ROUND_UP_TO_PAGE((uint32_t)__bss_end);
-    for (uint32_t addr = bss_start; addr < bss_end; addr += PAGE_SIZE)
-    {
-        VMM_MapPage(pageDirectory, addr, addr, PAGE_PRESENT | PAGE_RW); // Read-Write permissions
-    }
-	uint32_t vga_buffer = 0xB8000;
-    VMM_MapPage(pageDirectory, vga_buffer, vga_buffer, PAGE_PRESENT | PAGE_RW);
+    pageDirectory->entries[RECURSIVE_MAPPING_INDEX].address = (uint32_t)pageDirectory >> 12;
+    pageDirectory->entries[RECURSIVE_MAPPING_INDEX].present = 1;
+    pageDirectory->entries[RECURSIVE_MAPPING_INDEX].readwrite = 1;
+    pageDirectory->entries[RECURSIVE_MAPPING_INDEX].user = 0;
 
-	for (uint64_t i = 0; i < page_manager.total_pages; ++i)
-    {
-        uint64_t phys_addr = i * PAGE_SIZE;
 
-        if ((page_manager.page_bitmap[i / 64] & (1ULL << (i % 64))) == 0)
-        {
-            VMM_MapPage(pageDirectory, phys_addr, phys_addr, PAGE_PRESENT | PAGE_RW);
+    __asm__ volatile(
+        "mov %0, %%cr3\n"
+        "mov %%cr0, %%eax\n"
+        "or $0x80000000, %%eax\n"
+        "mov %%eax, %%cr0\n"
+        : :"r"(pageDirectory)
+        : "memory"
+    );
+}
+
+bool VMM_MapPage(PageDirectory* pageDirectory, uint32_t virtualAddress, size_t size, uint32_t physicalAddress, uint32_t flags) {
+    uint32_t vaddr = ROUND_DOWN_TO_PAGE(virtualAddress);
+    uint32_t paddr = ROUND_DOWN_TO_PAGE(physicalAddress);
+    size = ROUND_UP_TO_PAGE(size);
+
+    while (size > 0) {
+        uint32_t pageDirIndex = vaddr >> 22;
+        uint32_t pageTableIndex = (vaddr >> 12) & 0x03FF;
+
+        page_dir_entry* pageDirEntry = &pageDirectory->entries[pageDirIndex];
+
+        if (!is_page_present(pageDirEntry)) {
+            PageTable* newPageTable = alloc_pages(1);
+            if (!newPageTable) return false;
+
+            set_page_entry((page_table_entry*)pageDirEntry, (uint32_t)newPageTable, PAGE_PRESENT | PAGE_RW | PAGE_USER);
         }
+
+        PageTable* pageTable = (PageTable*)(pageDirEntry->address << 12);
+        set_page_entry(&pageTable->entries[pageTableIndex], paddr, flags);
+
+        vaddr += PAGE_SIZE;
+        paddr += PAGE_SIZE;
+        size -= PAGE_SIZE;
     }
 
-	enable_paging(pageDirectory);
-}
-
-bool VMM_MapPage(PageDirectory* pageDirectory, uint32_t virtualAddress, uint32_t physicalAddress, uint32_t flags)
-{
-    uint32_t directoryIndex = virtualAddress >> 22;
-    uint32_t tableIndex = (virtualAddress >> 12) & 0x03FF;
-
-    // Get the Page Table from the Page Directory
-    PageTable* pageTable = pageDirectory->tables[directoryIndex];
-
-    // If the Page Table doesn't exist, allocate a new one
-    if (!pageTable)
-    {
-        pageTable = (PageTable*)alloc_pages(1);
-        memset(pageTable, 0, PAGE_SIZE); // Clear the new page table
-        pageDirectory->tables[directoryIndex] = pageTable;
-    }
-
-    // Set the entry in the Page Table
-    pageTable->entries[tableIndex] = (physicalAddress & 0xFFFFF000) | (flags & 0xFFF);
-
+    __asm__ volatile(
+        "invlpg (%0)" : :"r"(virtualAddress) : "memory"
+    );
     return true;
 }
 
-bool VMM_UnmapPage(PageDirectory* pageDirectory, uint32_t virtualAddress)
-{
-    uint32_t directoryIndex = virtualAddress >> 22;
-    uint32_t tableIndex = (virtualAddress >> 12) & 0x03FF;
+bool VMM_UnmapPage(PageDirectory* pageDirectory, uint32_t virtualAddress) {
+    uint32_t vaddr = ROUND_DOWN_TO_PAGE(virtualAddress);
+    uint32_t pageDirIndex = vaddr >> 22;
+    uint32_t pageTableIndex = (vaddr >> 12) & 0x03FF;
 
-    PageTable* pageTable = pageDirectory->tables[directoryIndex];
+    page_dir_entry* pageDirEntry = &pageDirectory->entries[pageDirIndex];
 
-    if (pageTable)
-    {
-        // Clear the entry in the Page Table and free the page
-        pageTable->entries[tableIndex] = 0;
-		free_pages(pageTable, 1);
-    }
+    if (!is_page_present(pageDirEntry)) return false;
+
+    PageTable* pageTable = (PageTable*)(pageDirEntry->address << 12);
+    page_table_entry* pageEntry = &pageTable->entries[pageTableIndex];
+
+    if (!is_page_present(pageEntry)) return false;
+
+    free_pages((void*)(pageEntry->address << 12), 1);
+    pageEntry->present = 0;
+    __asm__ volatile(
+        "invlpg (%0)" : :"r"(virtualAddress) : "memory"
+    );
 
     return true;
 }
