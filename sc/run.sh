@@ -18,4 +18,4 @@ esac
 
 
 clear
-qemu-system-i386 $QEMU_ARGS
+qemu-system-x86_64 $QEMU_ARGS

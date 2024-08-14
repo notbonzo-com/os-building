@@ -109,3 +109,55 @@ char* strncpy(char* dst, const char* src, unsigned n)
     *dst = '\0';
     return origDst;
 }
+
+char* strtok_r(char* str, const char* delim, char** saveptr) {
+    char *start;
+
+    if (str == NULL)
+        str = *saveptr;
+
+    str += strspn(str, delim);
+    if (*str == '\0') {
+        *saveptr = str;
+        return NULL;
+    }
+
+    start = str;
+    str = str + strcspn(str, delim);
+
+    if (*str != '\0') {
+        *str = '\0';
+        *saveptr = str + 1;
+    } else {
+        *saveptr = str;
+    }
+
+    return start;
+}
+
+size_t strcspn(const char* str, const char* reject) {
+    const char *s, *r;
+
+    for (s = str; *s != '\0'; ++s) {
+        for (r = reject; *r != '\0'; ++r) {
+            if (*s == *r)
+                return s - str;
+        }
+    }
+    return s - str;
+}
+
+size_t strspn(const char* str, const char* accept) {
+    const char* s;
+    const char* a;
+
+    for (s = str; *s != '\0'; ++s) {
+        for (a = accept; *a != '\0'; ++a) {
+            if (*s == *a)
+                break;
+        }
+        if (*a == '\0')
+            return s - str;
+    }
+    return s - str;
+}

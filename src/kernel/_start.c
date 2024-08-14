@@ -32,5 +32,7 @@ void _start(bootparams_t params)
     init_shell();
 
     printf("Terminating Kernel\n");
+    i686_outb(0x604, 0x2000);
+    i686_outb(0x4004, 0x3400);
     i686_Panic();
 }
