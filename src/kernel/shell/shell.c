@@ -17,6 +17,7 @@ void ls(char* path) {
         return;
     } else if (fd->IsDirectory == false) {
         printf("Not a directory\n");
+        FAT_Close(fd);
         return;
     }
     const char* files = FAT_ListDir(fd);
@@ -27,9 +28,9 @@ void ls(char* path) {
 void cd(char* path) {
     FAT_File* fd = FAT_Open(path);
     if (fd == NULL) {
-        printf("");
         return;
     } else if (fd->IsDirectory == false) {
+        FAT_Close(fd);
         printf("Not a directory\n");
         return;
     }

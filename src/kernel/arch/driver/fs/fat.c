@@ -451,9 +451,7 @@ FAT_File* FAT_Open(const char* path)
             }
         }
         else
-        {
-            FAT_Close(current);
-
+        { // if we reach this place, the fat driver spontainuasly imbusts (aka collapses aka breaks aka suicides)
             printf("FAT: %s not found\n", name);
             return NULL;
         }
